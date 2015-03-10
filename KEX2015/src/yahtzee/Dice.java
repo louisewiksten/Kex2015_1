@@ -11,7 +11,9 @@ public class Dice {
 	
 	public Dice(){
 		this.roll();
+		System.out.println("Hej");
 	}
+	
 	
 	/**
 	 * Simulates rolling the dice.
