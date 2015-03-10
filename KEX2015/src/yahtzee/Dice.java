@@ -3,6 +3,8 @@ import java.util.Random;
 /**
  * Creates a Dice class that represents a Dice and implements the different functions of
  * the dice.
+ * To simlate same dicethrows in different algorithms, we "roll" the dice three times and 
+ * remember the rolls so that if reroll is choosen we send the next simulated data.
  * 
  * @author D.Jendeberg and L.Wikstén
  */
@@ -14,9 +16,9 @@ public class Dice {
 		this.roll();
 	}
 	
-	
+
 	/**
-	 * Simulates rolling the dice. Saves all values in case of extra rolls.
+	 * Simulates rolling the dice. Saves 3 values in case of extra rolls.
 	 */
 	public void roll(){
 		Random rng = new Random();
@@ -27,7 +29,9 @@ public class Dice {
 		score[2] = rng.nextInt(5)+1;
 		current = 0;
 	}
-	
+	/**
+	 * Simulates rerolling the dice, i.e. points to next value.
+	 */
 	public void reroll(){
 		current++;
 	}

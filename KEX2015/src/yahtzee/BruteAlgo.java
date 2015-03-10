@@ -10,6 +10,13 @@ import java.util.Arrays;
  */
 public class BruteAlgo {
 	
+	/**
+	 *  Play method to simulate a game of solitare yahtzee.
+	 *  
+	 * @param turn The turn number, between 1 and 15.
+	 * @param dices The the sides facing up on the dices.
+	 * @param sc The scorecard, i.e. current points and empty rows for not played.
+	 */
 	public static void play(int turn, Dice[] dices, ScoreCard sc){
 		//The value for turn will either be submitted or calculated,
 		//can easily be calculated by the scorecard.
@@ -136,8 +143,15 @@ public class BruteAlgo {
 		case 12:
 		case 13:
 		case 14:
+			//Chance
+			//Save everything over nomalized value 3,5 i.e. 4 or over.
+			for(int i = 0; i<5; i++){
+				if(dices[i].getScore() < 4){
+					dices[i].reroll();
+				}
+			}
+			break;
 		case 15:
-		case 16:
 			scores = new int[5];
 			int noReRoll = 0;
 			
