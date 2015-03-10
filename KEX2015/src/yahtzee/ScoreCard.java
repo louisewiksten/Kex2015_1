@@ -2,7 +2,8 @@ package yahtzee;
 
 /**
  * A ScoreCard class that keeps the results of the game.
- *
+ * 
+ * @author D.Jendeberg and L.Wikstén
  */
 public class ScoreCard {
 	private int[] results;
@@ -16,9 +17,16 @@ public class ScoreCard {
 		sum = 0;
 	}
 	
+	/**
+	 * This Method is used to set the score for a certain row in the scorecard. 
+	 * It calculates the score depending on the set of dices and which row is selected.
+	 * @param rolls
+	 * @param row
+	 */
 	public void setScore(int[] rolls, int row){
+		//TODO change this method to a switch case that calculates the score for selected row given a set of dices.
 		int rowSum = 0;
-		for(int i = 0; i < 16; i++){
+		for(int i = 0; i < 5; i++){
 			diceResults[row][i] = rolls[i];
 		}
 		sum += rowSum;
