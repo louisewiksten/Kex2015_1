@@ -24,13 +24,13 @@ public class Dice {
 		Random rng = new Random();
 		score = new int[3];
 		//Save value for all extra rolls.
-		score[0] = rng.nextInt(5)+1;
-		score[1] = rng.nextInt(5)+1;
-		score[2] = rng.nextInt(5)+1;
+		score[0] = rng.nextInt(6)+1;
+		score[1] = rng.nextInt(6)+1;
+		score[2] = rng.nextInt(6)+1;
 		current = 0;
 	}
 	/**
-	 * Simulates rerolling the dice, i.e. points to next value.
+	 * Simulates re-rolling the dice, i.e. points to next value.
 	 */
 	public void reroll(){
 		current++;

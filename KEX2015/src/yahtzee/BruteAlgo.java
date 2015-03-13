@@ -20,7 +20,7 @@ public class BruteAlgo {
 	public static void play(int turn, Dice[] dices, ScoreCard sc){
 		//The value for turn will either be submitted or calculated,
 		//can easily be calculated by the scorecard.
-		for (int i = 0; i<3; i++){
+		for (int i = 0; i<2; i++){
 			evaluate(turn, dices);
 		}
 		//Sets the score for a given row (turn).
@@ -39,6 +39,7 @@ public class BruteAlgo {
 		int [] scores;
 		boolean pair;
 		boolean trice;
+		boolean foursome;
 		switch(turn){
 		case 1: //Ones
 		case 2: //Twos
@@ -49,7 +50,7 @@ public class BruteAlgo {
 			//1-6 just save the turn values.
 			for(int i=0;i<5;i++){
 				if(dices[i].getScore()==turn){
-					//Do noting
+					//Do nothing
 				} else {
 					dices[i].reroll();
 				}
@@ -62,7 +63,7 @@ public class BruteAlgo {
 				scores[i] = dices[i].getScore();
 			}
 			Arrays.sort(scores);				//Sort scores.
-			for(int i = 0; i<5 && !pair; i++){	//Check for pairs.
+			for(int i = 0; i<4 && !pair; i++){	//Check for pairs.
 				if(scores[i] == scores[i+1])
 					pair = true;
 			}
@@ -138,8 +139,48 @@ public class BruteAlgo {
 			for(Dice d : dices)
 				d.reroll();
 			break;
-		case 10: //Foursome
-			//TODO
+		case 10: //Foursome TODO
+			pair = false;
+			trice = false;
+			foursome = false;
+			int bestValue = 0;
+			scores = new int[5];
+			for(int i = 0; i<5; i++){
+				scores[i] = dices[i].getScore();
+			}
+			Arrays.sort(scores); //Sort the list of scores. 
+			for(int i = 0; i < 5; i++){
+				if(i < 2){ //only then this is possible
+					if(scores[i] == scores[i+1] && scores[i] == scores[i+2] && scores[i] == scores[i+3]){
+						foursome = true; //Done!!
+						break;
+					}
+				}
+				if(i < 3){
+					if(scores[i] == scores[i+1] && scores[i] == scores[i+2]){
+						trice = true; //Only two dice to reroll. 
+						bestValue = scores[i];
+					}
+				}
+				if(i<4){
+					if(scores[i] == scores[i+1] ){
+						pair = true;
+						if(!trice)
+							bestValue = scores[i];
+					}
+				}
+				if(bestValue == 0){
+					bestValue = scores[4];
+				}
+			}
+			if(!foursome){
+				for(Dice d : dices){
+					if(d.getScore() != bestValue){
+						d.reroll();
+					} 
+				}
+			}
+			break; 
 		case 11: //Small Straight
 			scores = new int[5];
 			for(int i = 0; i<5; i++){
@@ -194,7 +235,7 @@ public class BruteAlgo {
 			Arrays.sort(scores);
 			for(int i = 0; i<4; i++){
 				if(scores[i] == scores[i+1]){
-					if(scores[i] == scores[i+2]){
+					if(i < 3 && scores[i] == scores[i+2] ){
 						//Three equal dices will allways be in a row.
 						tri = scores[i];
 					}else{
