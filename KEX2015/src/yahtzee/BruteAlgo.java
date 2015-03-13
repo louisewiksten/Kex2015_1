@@ -40,12 +40,12 @@ public class BruteAlgo {
 		boolean pair;
 		boolean trice;
 		switch(turn){
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-		case 6:
+		case 1: //Ones
+		case 2: //Twos
+		case 3: //Threes
+		case 4: //Fours
+		case 5: //Fives
+		case 6: //Sixes
 			//1-6 just save the turn values.
 			for(int i=0;i<5;i++){
 				if(dices[i].getScore()==turn){
@@ -55,7 +55,7 @@ public class BruteAlgo {
 				}
 			}
 			break;
-		case 7:
+		case 7: //Pair
 			pair = false;
 			scores = new int[5];
 			for(int i = 0; i<5; i++){			//Get all scores.
@@ -73,7 +73,7 @@ public class BruteAlgo {
 					d.reroll();
 			}
 			break;
-		case 8:
+		case 8: //Two pairs
 			//Two pair, two dices should be equal and another pair should also equal but not equal to the first.
 			//first part, find if to dices equal.
 			int[] firstpair = new int[2];
@@ -106,7 +106,7 @@ public class BruteAlgo {
 				//Both pairs found no reroll needed.
 			}
 			break;
-		case 9:
+		case 9: //Threesome
 			trice = false;
 			pair = false;
 			int pairValue = 0;
@@ -138,12 +138,83 @@ public class BruteAlgo {
 			for(Dice d : dices)
 				d.reroll();
 			break;
-		case 10:
-		case 11:
-		case 12:
-		case 13:
-		case 14:
-			//Chance
+		case 10: //Foursome
+			//TODO
+		case 11: //Small Straight
+			scores = new int[5];
+			for(int i = 0; i<5; i++){
+				scores[i]=-1;
+			}
+			/* This loop will make the scores list look as follows,
+			 * if a dice contains the value i then a dice contains that value
+			 * if a dice position does not come up in scores then the dice should be rerolled. 
+			 * */
+			for(int i = 0; i<5; i++){
+				for(Dice dice : dices){
+					if(dice.getScore() == i){
+						scores[i] = dice.getScore();
+					}
+				}
+			}
+			for(int i = 0; i<5; i++){
+				if(scores[i]==-1){
+					dices[i].reroll();
+				}
+			}
+			break;
+		case 12: //Large Straight
+			scores = new int[5];
+			for(int i = 0; i<5; i++){
+				scores[i]=-1;
+			}
+			/* This loop will make the scores list look as follows,
+			 * if a dice contains the value i then we set that position in scores to the dice placement
+			 * if a dice position does not come up in scores then the dice should be rerolled. 
+			 * */
+			for(int i = 0; i<5; i++){
+				for(int j = 0; j<5; j++){
+					if(dices[j].getScore() == i+1){
+						scores[i] = j;
+					}
+				}
+			}
+			for(int i = 0; i<5; i++){
+				if(scores[i]==-1){
+					dices[i].reroll();
+				}
+			}
+			break;
+		case 13: //Full House
+			int tri = 0;
+			int par = 0;
+			scores = new int[5];
+			for(int i = 0; i<5; i++){
+				scores[i] = dices[i].getScore();
+			}
+			Arrays.sort(scores);
+			for(int i = 0; i<4; i++){
+				if(scores[i] == scores[i+1]){
+					if(scores[i] == scores[i+2]){
+						//Three equal dices will allways be in a row.
+						tri = scores[i];
+					}else{
+						//Two dices in a row are equal.
+						par = scores[i];
+					}
+					i++;
+				}
+			}
+			for(int i = 0; i<5; i++){
+				if(dices[i].getScore() == tri || dices[i].getScore() == par){
+					//Do Nothing 
+					//This is a good threesome
+					//or a par
+				}else{
+					dices[i].reroll();
+				}
+			}
+			break;
+		case 14: //Chance
 			//Save everything over nomalized value 3,5 i.e. 4 or over.
 			for(int i = 0; i<5; i++){
 				if(dices[i].getScore() < 4){
@@ -151,7 +222,7 @@ public class BruteAlgo {
 				}
 			}
 			break;
-		case 15:
+		case 15: //Yahtzee
 			scores = new int[5];
 			int noReRoll = 0;
 			
