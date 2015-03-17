@@ -28,13 +28,6 @@ public class HumanAlgo {
 	 * @param dices A list of Dices that can be rerolled if needed.
 	 */
 	public static void evaluate(int turn, Dice[] dices){
-		int [] scores;
-		boolean pair;
-		boolean trice;
-		boolean foursome;
-		switch(turn){
-		
-		}
 		
 	}
 }
