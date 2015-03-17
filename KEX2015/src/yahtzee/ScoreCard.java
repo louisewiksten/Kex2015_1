@@ -158,11 +158,14 @@ public class ScoreCard {
 	
 	public static void main(String[] args){
 		ScoreCard sc = new ScoreCard();
+		ScoreCard sc2 = new ScoreCard();
 		Dice[] dices = new Dice[5];
 		for (int i = 0; i<5; i++)
 			dices[i] = new Dice();
 		for (int i = 0; i<15; i++){
+			
 			BruteAlgo.play(dices, sc);
+			HumanAlgo.play(dices, sc2);
 			for(Dice d : dices){
 				d.roll();
 			}
@@ -180,8 +183,24 @@ public class ScoreCard {
 					System.out.print("\nBonus: 0\n-------------------");
 				}
 			}
+			
+			System.out.print("\n"+ sc2.rowNames[i] +": " + sc2.getRowScore(i+1) + "p - ");
+			for(int index = 0; index<5; index++){
+				System.out.print(""+sc2.getDiceRes()[i+1][index]+ " ");
+			}
+			
+			if(i == 5){ //Print part time score
+				System.out.print("\n-------------------" +
+						"\nSum of top rows: " + (sc2.getTotalScore()));
+				if(sc2.getTotalScore() >= 63){
+					System.out.print("\nBouns: 50\n-------------------");
+				} else{
+					System.out.print("\nBonus: 0\n-------------------");
+				}
+			}
 		}
 		System.out.println("\n-------------------\nTotal Score: " + sc.getTotalScore());
+		System.out.println("\n-------------------\nTotal Score: " + sc2.getTotalScore());
 		
 	}
 	
