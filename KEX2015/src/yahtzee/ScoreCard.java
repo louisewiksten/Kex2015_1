@@ -17,6 +17,9 @@ public class ScoreCard {
 	public ScoreCard(){
 		
 		results = new int[16]; //Change to n.o. lines
+		for(int i = 1; i<16; i++){
+			results[i]=-1;
+		}
 		diceResults = new int[16][5];
 		rowNames = new String[16];
 		sum = 0;
@@ -52,7 +55,6 @@ public class ScoreCard {
 	 * @param row
 	 */
 	public void setScore(int[] rolls, int row){
-		//TODO change this method to a switch case that calculates the score for selected row given a set of dices.
 		int rowSum = 0;
 		Arrays.sort(rolls);
 		switch(row){

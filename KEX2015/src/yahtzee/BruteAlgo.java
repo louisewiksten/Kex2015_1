@@ -139,7 +139,7 @@ public class BruteAlgo {
 			for(Dice d : dices)
 				d.reroll();
 			break;
-		case 10: //Foursome TODO
+		case 10: //Foursome
 			pair = false;
 			trice = false;
 			foursome = false;
