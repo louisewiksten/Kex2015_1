@@ -10,16 +10,7 @@ public class HumanAlgo {
 	 * @param sc The scorecard, i.e. current points and empty rows for not played.
 	 */
 	public static void play(Dice[] dices, ScoreCard sc){
-		//The value for turn will either be submitted or calculated,
-		//can easily be calculated by the scorecard.
-		for (int i = 0; i<2; i++){
-			evaluate(1, dices);
-		}
-		//Sets the score for a given row (turn).
-		int[] list = new int[5];
-		for(int i = 0; i < 5; i++)
-			list[i] = dices[i].getScore();
-		sc.setScore(list, 2);
+		boolean[] playableScore = new boolean[16]; //Keep 
 	}
 	/**
 	 * Method that evaluates a list of dices and rerolls the dices if needed.

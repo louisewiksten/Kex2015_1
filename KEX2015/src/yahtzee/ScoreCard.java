@@ -162,7 +162,7 @@ public class ScoreCard {
 		for (int i = 0; i<5; i++)
 			dices[i] = new Dice();
 		for (int i = 0; i<15; i++){
-			BruteAlgo.play(i+1, dices, sc);
+			BruteAlgo.play(dices, sc);
 			for(Dice d : dices){
 				d.roll();
 			}

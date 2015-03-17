@@ -17,7 +17,13 @@ public class BruteAlgo {
 	 * @param dices The the sides facing up on the dices.
 	 * @param sc The scorecard, i.e. current points and empty rows for not played.
 	 */
-	public static void play(int turn, Dice[] dices, ScoreCard sc){
+	public static void play(Dice[] dices, ScoreCard sc){
+		int turn = 0;
+		while((sc.getRowScore(turn)!=-1)){
+			turn++;
+			if(turn == 15)
+				break;
+		}
 		//The value for turn will either be submitted or calculated,
 		//can easily be calculated by the scorecard.
 		for (int i = 0; i<2; i++){
