@@ -19,10 +19,8 @@ public class BruteAlgo {
 	 */
 	public static void play(Dice[] dices, ScoreCard sc){
 		int turn = 0;
-		while((sc.getRowScore(turn)!=-1)){
+		while((sc.getRowScore(turn)!=-1)){ //Find which row to complete
 			turn++;
-			if(turn == 15)
-				break;
 		}
 		//The value for turn will either be submitted or calculated,
 		//can easily be calculated by the scorecard.
