@@ -172,6 +172,9 @@ public class ScoreCard {
 		for (int i = 0; i<15; i++){
 			
 			BruteAlgo.play(dices, sc);
+			for(int j = 0; j < 5; j++){
+				dices[j].reset();
+			}
 			HumanAlgo.play(dices, sc2);
 			for(Dice d : dices){
 				d.roll();

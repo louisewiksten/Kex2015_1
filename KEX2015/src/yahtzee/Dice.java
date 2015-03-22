@@ -42,6 +42,13 @@ public class Dice {
 		return score[current];
 	}
 	
+	/**
+	 * Resets the dice value to 0.
+	 */
+	public void reset(){
+		current = 0;
+	}
+	
 	//Below method for testing purposes
 	/*public static void main(String args[]){
 		Dice d = new Dice();
