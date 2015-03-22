@@ -155,6 +155,13 @@ public class ScoreCard {
 		}
 	}
 	
+	public int getTopRowSum(){
+		int tempSum = 0;
+		for (int i = 1; i < 7; i++){
+			tempSum += results[i];
+		}
+		return tempSum;
+	}
 	
 	public static void main(String[] args){
 		ScoreCard sc = new ScoreCard();
@@ -183,7 +190,10 @@ public class ScoreCard {
 					System.out.print("\nBonus: 0\n-------------------");
 				}
 			}
-			
+		}
+		System.out.println("\n-------------------\nTotal Score: " + sc.getTotalScore());
+	
+		for (int i = 0; i<15; i++){
 			System.out.print("\n"+ sc2.rowNames[i] +": " + sc2.getRowScore(i+1) + "p - ");
 			for(int index = 0; index<5; index++){
 				System.out.print(""+sc2.getDiceRes()[i+1][index]+ " ");
@@ -191,7 +201,7 @@ public class ScoreCard {
 			
 			if(i == 5){ //Print part time score
 				System.out.print("\n-------------------" +
-						"\nSum of top rows: " + (sc2.getTotalScore()));
+						"\nSum of top rows: " + (sc2.getTopRowSum()));
 				if(sc2.getTotalScore() >= 63){
 					System.out.print("\nBouns: 50\n-------------------");
 				} else{
@@ -199,9 +209,6 @@ public class ScoreCard {
 				}
 			}
 		}
-		System.out.println("\n-------------------\nTotal Score: " + sc.getTotalScore());
 		System.out.println("\n-------------------\nTotal Score: " + sc2.getTotalScore());
-		
 	}
-	
 }

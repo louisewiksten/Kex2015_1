@@ -55,8 +55,18 @@ public class HumanAlgo {
 						maxscore = rowiscore; 
 					}
 				}
-				if(maxscore == 0){ //No fit
-					//TODO TODO TODO
+				
+			}
+			if(maxscore == 0){ //No fit
+				int minMaxrowscore = 100; //The row with the lowest maximum score
+				for(int i = 1; i < 16; i++){ //Go through score card
+					if(playableScores[i]){ //If playable, calculate maximum score
+						int rowiscore =	calculateMaximumScore(i);
+						if(rowiscore < minMaxrowscore){
+							selectedRow = i; //This row keeps the 'best' row to set 0 in
+							minMaxrowscore = rowiscore; 
+						}
+					}
 				}
 			}
 			finalScore = tempScore;
@@ -152,6 +162,48 @@ public class HumanAlgo {
 					rowSum += 50; //Four of a kind sum
 					break;
 				}
+				break;
+		}
+		return rowSum;
+	}
+	
+	private static int calculateMaximumScore(int row){
+		int rowSum = 0;
+		switch(row){
+			case 1: 	
+			case 2: 
+			case 3: 
+			case 4: 
+			case 5: 
+			case 6: 
+				rowSum = row*5;
+				break;
+			case 7: 
+				rowSum = 12;
+				break;
+			case 8: 
+				rowSum = 22;
+				break;
+			case 9:
+				rowSum = 18;
+				break;
+			case 10:
+				rowSum = 24;
+				break;
+			case 11:
+				rowSum = 15;
+				break;
+			case 12:
+				rowSum = 20;
+				break;
+			case 13:
+				rowSum = 28;
+				break;
+			case 14:
+				rowSum = 30;
+				break;
+			case 15:
+				rowSum = 50;
 				break;
 		}
 		return rowSum;
