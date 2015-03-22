@@ -202,7 +202,7 @@ public class ScoreCard {
 			if(i == 5){ //Print part time score
 				System.out.print("\n-------------------" +
 						"\nSum of top rows: " + (sc2.getTopRowSum()));
-				if(sc2.getTotalScore() >= 63){
+				if(sc2.getTopRowSum() >= 63){
 					System.out.print("\nBouns: 50\n-------------------");
 				} else{
 					System.out.print("\nBonus: 0\n-------------------");

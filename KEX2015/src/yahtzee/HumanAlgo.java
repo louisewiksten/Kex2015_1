@@ -55,7 +55,6 @@ public class HumanAlgo {
 						maxscore = rowiscore; 
 					}
 				}
-				
 			}
 			if(maxscore == 0){ //No fit
 				int minMaxrowscore = 100; //The row with the lowest maximum score
@@ -76,13 +75,39 @@ public class HumanAlgo {
 				d.reroll();
 			}*/
 			//TODO Only one more chance to reroll
-		} else {
+		} else if(rollsLeft == 2){
+			Arrays.sort(dices);
+			if(dices[0] == dices[1]){ //Check for similarities
+				 
+			} else if(dices[1] == dices[2]){
+				
+			} else if(dices[2] == dices[3]){
+				
+			} else if(dices[3] == dices[4]){
+				
+			} else { //Check for straights
+				if(hasStraight(dices)){
+					
+				}
+			}
 			//TODO Two more rerolls. Evaluate based on empty scorecard etc.
 		}
 		
 		
 	}
 	
+	/**
+	 * 
+	 * @param dices A sorted array of dice
+	 * @return True if it has small or large straight
+	 */
+	private static boolean hasStraight(Dice[] dices){
+		if(dices[0].getScore() == 1 && dices[1].getScore() == 2 && 
+				dices[2].getScore() == 3 && dices[3].getScore() == 4 && dices[4].getScore() == 5){
+			return true;
+		}
+		return false;
+	}
 	
 	private static int calculatePossibleScore(int row, int[] rolls){
 		int rowSum = 0;
