@@ -70,7 +70,7 @@ public class HumanAlgo {
 			}
 			finalScore = tempScore;
 			sc.setScore(finalScore, selectedRow);
-		} else if(rollsLeft == 1) { //TODO this method - all of it!
+		} else if(rollsLeft == 7) { //TODO this method - all of it!
 			/*for(Dice d : dices){
 				d.reroll();
 			}*/
@@ -82,24 +82,15 @@ public class HumanAlgo {
 			Arrays.sort(tempScore);
 			
 			//TODO whatever neccessary
-			if(false){ //TODO fix
-				
-			} else { //Check for straights
-				if(playableScores[12]) { //Go for large straight if empty
-					if(hasLargeStraight(tempScore)){	
-					}else 
-						dices[0].reroll();
-				} else if(playableScores[11]){ //Go for small straight if empty
-					if(hasSmallStraight(tempScore)){	
-					}else 
-						dices[4].reroll();
-				} else {
-					for (int i = 0; i < 4; i++)
-						dices[i].reroll(); //Save best dice
-				}
-			}
-			//TODO Only one more chance to reroll
-		} else if(rollsLeft == 2){
+			//TODO
+			//TODO
+			//TODO
+			//TODO
+			//TODO
+			//TODO
+			//TODO
+			//TODO
+		} else if(rollsLeft == 2 /*|| rollsLeft == 1*/){
 			int[] tempScore = new int[5];
 			for(int i = 0; i<5; i++){
 				tempScore[i] = dices[i].getScore();
@@ -109,34 +100,100 @@ public class HumanAlgo {
 			
 			/* * * THE FIRST TWO DICES ALIKE - all possible * * */
 			if(tempScore[0] == tempScore[1]){
+				/* * Three of a kind * */
 				if(tempScore[0] == tempScore[2]){ //Three of same kind
 					if(tempScore[0] == tempScore[3]){//Four of same kind
 						if(tempScore[0] == tempScore[4]){ //Yahtzee!
 							return;
 						} 
-					} else if(tempScore[3] == tempScore[4]){ //Full house! 
-						return;
 					} else if(playableScores[13]){ //Full house possible
-						dices[0].reroll(); //dices[4] high enough to go for full house
+						if(tempScore[3] == tempScore[4]){ //Full house! 
+							return;
+						}
+						for(Dice d : dices){
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]) //Re-roll different dice
+								d.reroll();
+						}
 						return;
 					} 
 					for(Dice d : dices){
 						if(d.getScore() != tempScore[0]) //Re-roll different dice
 							d.reroll();
 					}
+					return;
+				/* * Two pairs * */	
 				} else if(tempScore[2]==tempScore[3]){ //Two pairs!
-					if(tempScore[2]==tempScore[4]){//Full house!
-						
+					if(playableScores[13]){//Full house free
+						if(tempScore[2]==tempScore[4]){//Full house!
+							return;
+						} 
+						for(Dice d : dices){
+							if(d.getScore() != tempScore[2] && d.getScore() != tempScore[0]) //Re-roll the one different dice
+								d.reroll();
+						}
+						return;
 					}
-				} else if(tempScore[3]==tempScore[4]){
-					
+					if(!playableScores[8]){//Two pairs not free
+						//keep best pair
+						for(Dice d : dices){
+							if(d.getScore() != tempScore[2]) //Re-roll different dice
+								d.reroll();
+						}
+						return;
+					}
+				/* * Two pairs * */	
+				} else if(tempScore[3]==tempScore[4]){//Two pairs!
+					if(playableScores[13] || playableScores[8]){ //Full house possible or two pairs
+						for(Dice d : dices){
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3])
+								d.reroll(); //Re-roll for full house or just to improve situation.
+						}
+						return;
+					} else {
+						for(Dice d : dices){
+							if(d.getScore() != tempScore[3])
+								d.reroll(); //Save best pair
+						}
+						return;
+					}
+				/* * Only two alike * */ 	
 				} else{ //Only the two first alike-no other.
-					
+					if(tempScore[0] == 1 && tempScore[4] != 6){ //No sixes - Small straight
+						if(playableScores[11]){
+							for(Dice d : dices){
+								if(d.getScore() == tempScore[0]){//Re-roll the dice with existing number.
+									d.reroll();
+									return;
+								}	
+							}
+						}
+					} else if(tempScore[0] != 1 && tempScore[4] == 6){ //No ones - LG straight
+						if(playableScores[12]){
+							for(Dice d : dices){
+								if(d.getScore() == tempScore[0]){ //Re-roll the dice with existing number.
+									d.reroll();
+									return;
+								}	
+							}
+						}
+					} 
+				}
+				if(playableScores[(tempScore[0])]){
+					for(Dice d : dices){
+						if(d.getScore() != tempScore[0]){ //Re-roll different dices.
+							d.reroll();
+						}	
+					}
+					return;
+				}
+				for(Dice d : dices){
+					if(d.getScore() != 6){ //Only save sixes for a good start.
+						d.reroll();
+					}	
 				}
 				
-				//TODO 
-				//TODO 
-				//TODO
+				
+				
 				
 			/* * TWO DICES ALIKE, value higher than 2 and one dice shows less.  * */	
 			} else if(tempScore[1] == tempScore[2]){ //Dice 2 and 3 shows same value
@@ -361,15 +418,25 @@ public class HumanAlgo {
 			} else { //Check for straights
 				if(playableScores[12]) { //Go for large straight if empty
 					if(hasLargeStraight(tempScore)){	
-					}else 
-						dices[0].reroll();
+					} else {
+						for(Dice d : dices){
+							if(d.getScore() == 1)
+								d.reroll();
+						}
+					}
 				} else if(playableScores[11]){ //Go for small straight if empty
 					if(hasSmallStraight(tempScore)){	
-					}else 
-						dices[4].reroll();
+					}else {
+						for(Dice d : dices){
+							if(d.getScore() == 6)
+								d.reroll();
+						}
+					}
 				} else {
-					for (int i = 0; i < 4; i++)
-						dices[i].reroll(); //Save best dice
+					for(Dice d : dices){
+						if(d.getScore() >= 5) //keep best dice(s)
+							d.reroll();
+					}
 				}
 			}
 		}
