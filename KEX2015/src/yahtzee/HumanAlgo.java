@@ -112,23 +112,27 @@ public class HumanAlgo {
 				if(tempScore[0] == tempScore[2]){ //Three of same kind
 					if(tempScore[0] == tempScore[3]){//Four of same kind
 						if(tempScore[0] == tempScore[4]){ //Yahtzee!
-						} else {
-							for(Dice d : dices){
-								if(d.getScore() != tempScore[0]) //Re-roll different dice
-									d.reroll();
-							}
-						}
+							return;
+						} 
 					} else if(tempScore[3] == tempScore[4]){ //Full house! 
-					
+						return;
 					} else if(playableScores[13]){ //Full house possible
 						dices[0].reroll(); //dices[4] high enough to go for full house
-					} else { //Try to get better results.
-						for(Dice d : dices){
-							if(d.getScore() != tempScore[0]) //Re-roll different dice
-								d.reroll();
-						}
-					}	
-				} 
+						return;
+					} 
+					for(Dice d : dices){
+						if(d.getScore() != tempScore[0]) //Re-roll different dice
+							d.reroll();
+					}
+				} else if(tempScore[2]==tempScore[3]){ //Two pairs!
+					if(tempScore[2]==tempScore[4]){//Full house!
+						
+					}
+				} else if(tempScore[3]==tempScore[4]){
+					
+				} else{ //Only the two first alike-no other.
+					
+				}
 				
 				//TODO 
 				//TODO 
@@ -320,7 +324,36 @@ public class HumanAlgo {
 				
 			/* * ONLY TWO DICES ALIKE value higher than 4 and 3 dices with different values below * */	
 			} else if(tempScore[3] == tempScore[4]){//Only pair possible 
-				//TODO
+				if(playableScores[(tempScore[3])]){//Go for this row
+					for(Dice d : dices){
+						if(d.getScore() != tempScore[3])
+							d.reroll(); //Re-roll different dice.
+					}
+				} else { //Always worth saving, because of sorted and no other pairs, this is at least 4.
+					if(tempScore[0] == 1 && tempScore[3] != 6){ //No sixes - Small straight
+						if(playableScores[11]){
+							for(Dice d : dices){
+								if(d.getScore() == tempScore[3]){
+									d.reroll();
+									return;
+								}	
+							}
+						}
+					} else if(tempScore[0] != 1 && tempScore[3] == 6){ //No ones - LG straight
+						if(playableScores[12]){
+							for(Dice d : dices){
+								if(d.getScore() == tempScore[3]){
+									d.reroll();
+									return;
+								}	
+							}
+						}
+					}
+					for(Dice d : dices){ //Go for this score.
+						if(d.getScore() != tempScore[3])
+							d.reroll(); //Re-roll different dice.
+					}
+				}
 				
 				
 				
@@ -339,7 +372,7 @@ public class HumanAlgo {
 						dices[i].reroll(); //Save best dice
 				}
 			}
-		}//TODO
+		}
 	}
 	
 	/**
@@ -377,9 +410,12 @@ public class HumanAlgo {
 			case 4: 
 			case 5: 
 			case 6: 
-				for(int r : rolls)
+				for(int r : rolls){
 					if(r == row)
 						rowSum += r;
+					if(rowSum >= 3*row)
+						rowSum += 50; //Bonus if more than three
+				}
 				break;
 			case 7: 
 				for(int i = 4; i > 0; i--)
@@ -459,7 +495,7 @@ public class HumanAlgo {
 			case 4: 
 			case 5: 
 			case 6: 
-				rowSum = row*5;
+				rowSum = row*5+50;
 				break;
 			case 7: 
 				rowSum = 12;

@@ -173,7 +173,7 @@ public class ScoreCard {
 			
 			BruteAlgo.play(dices, sc);
 			for(int j = 0; j < 5; j++){
-				dices[j].reset();
+				dices[j].reset(); //Start with roll 0 for each round.
 			}
 			HumanAlgo.play(dices, sc2);
 			for(Dice d : dices){
