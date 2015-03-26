@@ -80,15 +80,13 @@ public class HumanAlgo {
 			
 		/* *** *** ONE THROW LEFT *** *** */	
 		} else if(rollsLeft == 1) { //TODO this method - all of it!
-			/*for(Dice d : dices){
-				d.reroll();
-			}*/
 			int[] tempScore = new int[5];
 			for(int i = 0; i<5; i++){
 				tempScore[i] = dices[i].getScore();
 				//System.out.println("In evaluate ");
 			}
 			Arrays.sort(tempScore);
+			
 			
 			/* * * TWO DICES ALIKE - 1 and 2 * * */
 			if(tempScore[0] == tempScore[1]){
@@ -170,9 +168,17 @@ public class HumanAlgo {
 			} else if(tempScore[3] == tempScore[4]){
 				
 			
-			/* * * NO DICES ALIKE * * */	
-			} else {
-				
+			} 
+			/* * * NO DICES ALIKE * * */
+			if(playableScores[12]){//Large straight free
+				if(hasLargeStraight(tempScore)){
+					return;//Put score in straight
+				} 
+			}
+			if(playableScores[11]){//Small straight free
+				if(hasSmallStraight(tempScore)){
+					return;//Put score in straight
+				} 
 			}
 		
 			
@@ -505,14 +511,12 @@ public class HumanAlgo {
 			} else { //Check for straights
 				if(playableScores[12]) { //Go for large straight if empty
 					if(hasLargeStraight(tempScore)){	
-					} else {
-						for(Dice d : dices){
-							if(d.getScore() == 1)
-								d.reroll();
-						}
-					}
-				} else if(playableScores[11]){ //Go for small straight if empty
-					if(hasSmallStraight(tempScore)){	
+						return;
+					} 
+				} 
+				if(playableScores[11]){ //Go for small straight if empty
+					if(hasSmallStraight(tempScore)){
+						return;
 					}else {
 						for(Dice d : dices){
 							if(d.getScore() == 6)
