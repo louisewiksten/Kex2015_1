@@ -23,6 +23,9 @@ public class OptimizedAlgo {
 			evaluate(dices, playableScore, i);
 		}
 		
+		//TODO
+		//Evaluate in which box to score the points.
+		
 	}
 	/**
 	 * Evaluates a set of dices an a list of playable scores in the scorecard.
@@ -55,10 +58,6 @@ public class OptimizedAlgo {
 		expValues[14] = 0; //Never calculate value for chance, use chance when all else fails.
 		
 		
-		
-		
-		//TODO
-		//Evaluate which dices to reroll.
 		int maxCategory = 0;
 		double maxExpScore = 0;
 		for(int i = 0; i<16; i++){
@@ -69,11 +68,6 @@ public class OptimizedAlgo {
 		}
 		
 		reroll(dices,maxCategory);
-		
-		//TODO
-		//Evaluate in which box to score the points.
-		
-		
 	}
 	
 	/**
@@ -83,47 +77,45 @@ public class OptimizedAlgo {
 	 * @param dices 
 	 * @param sc
 	 */
-	private static double probability(Dice[] dices, int[] scores, int rollsLeft){
-		if(rollsLeft == 0){ return 0; }						//Fast fail!
-		float prob = 0;
+	private static double probability(Dice[] dices, int[] wanted, int rollsLeft){			
+		double prob = 0;
 		
 		//Create int array from dices for easier calculations.
 		int[] current = new int[5];
 		for(int i = 0; i<5; i++){
 			current[i] = dices[i].getScore();
 		}
+		Arrays.sort(current);
+		Arrays.sort(wanted);
 		
-		//Find correlating dice values for non zero dices, from scores, in current.  
-		for(int i = 0; i<5; i++){ 							//For each value in score.
-			boolean matchFound = false;
-			if(scores[i] == 0){								//If score value is zero then don't continue.
-				continue;
-			} else {										//For each non zero value in score.
-				for(int j = 0; j<5; j++){					//Check all current dice values.
-					if(scores[i] == current[j]){			//If match is found.
-						matchFound = true;					
-						current[i] = 0;						//Set the matching element to 0
-						break;								//break loop when a match is found.
-					}
-				}
-				if(!matchFound){							//No match is found then,
-					if(rollsLeft == 1){
-						if(prob == 0)						//If perfect corrolation so far
-							prob = 1/6;						//Set probability to 1/6
-						else								//If not perfect corrolation
-							prob*=1/6;						//Multiply probability with 1/6 (which is
-					}else if(rollsLeft == 2){				//probability for perfect corrolation later).
-						
-						//TODO check if this probability calculations is correct, feels wrong somehow...
-						
-						if(prob == 0)
-							prob *= (1/6)+(1/6)*(5/6);		//Pr(X<k) (Mathematical statistics).
-						else
-							prob *= (1/6)+(1/6)*(5/6);		//Pr(X<k) (Mathematical statistics).
-					}
+		//Calculate n to use in formula
+		int[] values = Arrays.copyOf(wanted, 5);
+		int n = 0;														//Edit distance current -> wanted
+		for(int i = 0; i<5; i++){
+			for(int j = 0; j<5; j++){
+				if(current[i] == values[j]){
+					values[j] = 0;
+					n++;
+					break;
 				}
 			}
 		}
+		n = 5-n;
+		
+		//Calculate k t use in fromula
+		int k = 0;
+		for(int i = 0; i<5; i++){
+			for(int j = 0; j<5; j++){
+				if(wanted[i]==0){
+					k++;
+					break;
+				}
+			}
+		}
+		k = n-k;
+		n *= rollsLeft;
+		
+		prob = probabilityMassFunction(n,k);
 		
 		return prob;										//Return calculated probability.
 	}
@@ -230,6 +222,7 @@ public class OptimizedAlgo {
 	
 	/**
 	 * Method to reroll the correct dices for the choosen category.
+	 * 
 	 * @param dices
 	 * @param category
 	 */
@@ -309,17 +302,138 @@ public class OptimizedAlgo {
 			
 			break;
 			
-		//TODO Cases 9-12
 		case 9: //Three of a kind
+			scores = new int[5];
+			save = 0;
+			for(int i = 0; i<5; i++){
+				scores[i] = dices[i].getScore();
+			}
+			Arrays.sort(scores);
+			for(int i = 0; i<3; i++){										
+				if(scores[i] == scores[i+2])	//Do we have a three of a kind?
+					save = scores[i];										//Save the three, reroll all else
+			}
+			if(save == 0){													//Did not have a three of a kind
+				for(int i = 0; i<4; i++){									//Check for pair instead
+					if(scores[i] == scores[i+1])							//Save the pair, reroll all else
+						save = scores[i];
+				}
+				if(save == 0){												//Did not have a pair
+					save = scores[4];
+				}
+			}
+			for(Dice dice : dices){											//Reroll all dices.
+				if(dice.getScore() != save)
+					dice.reroll();
+			}
 			break;
 			
 		case 10://Four of a kind
+			scores = new int[5];
+			save = 0;
+			
+			for(int i = 0; i<5; i++){
+				scores[i] = dices[i].getScore();
+			}
+			Arrays.sort(scores);
+			for(int i = 0; i<2; i++){										//Check for four of a kind
+				if(scores[i] == scores[i+3])
+					save = scores[i];
+			}
+			if(save == 0){													//No Four
+				for(int i = 0; i<3; i++){									//Check for three of a kind
+					if(scores[i] == scores[i+2])
+						save = scores[i];
+				}
+				if(save == 0){												//No three
+					for(int i = 0; i<5; i++){								//Check for pair
+						if(scores[i] == scores[i+1])
+							save = scores[i];
+					}
+					if(save == 0)
+						save = scores[4];
+				}
+			}
+			for(Dice dice : dices){
+				if(dice.getScore() != save)
+					dice.reroll();
+			}
 			break;
 			
 		case 11://Small Straight
+			scores = new int[5];
+			save = 0;
+			for(int i = 0; i<5; i++)
+				scores[i] = dices[i].getScore();
+			Arrays.sort(scores);
+			for(int i = 0; i<5; i++){
+				if(scores[i] != i+1)
+					save = -1;
+			}
+			if(save != -1){													//We have a small straight, nothing needed.
+				return;
+			}else{
+				save = 0;
+			}
+			//We don't have a small straight.
+			for(int i = 0; i<5; i++){										//Remove sixes from scores, they will allways reroll.
+				if(scores[i] == 6)
+					scores[i] = 0;
+			}
+
+			for(int i = 0; i<5; i++){										//For all scores
+				if(scores[i] == scores[i+1]){								//If a pair reroll.
+					for(Dice dice : dices){
+						if(dice.getScore() == scores[i]){
+							dice.reroll();
+							break;
+						}
+					}
+				}
+			}
+			for(Dice dice : dices){											//If six reroll
+				if(dice.getScore() == 6)
+					dice.reroll();
+			}
+			
 			break;
 			
 		case 12://Large Straight
+			scores = new int[5];
+			save = 0;
+			for(int i = 0; i<5; i++)
+				scores[i] = dices[i].getScore();
+			Arrays.sort(scores);
+			for(int i = 0; i<5; i++){
+				if(scores[i] != i+2)
+					save = -1;
+			}
+			if(save != -1){													//We have a large straight, nothing needed.
+				return;
+			}else{
+				save = 0;
+			}
+			//We don't have a large straight.
+			for(int i = 0; i<5; i++){										//Remove ones from scores, they will allways reroll.
+				if(scores[i] == 1)
+					scores[i] = 0;
+			}
+
+			for(int i = 0; i<5; i++){										//For all scores
+				if(scores[i] == scores[i+1]){								//If a pair 
+					for(Dice dice : dices){									//reroll one dice of that value.
+						if(dice.getScore() == scores[i]){
+							dice.reroll();
+							break;
+						}
+					}
+				}
+			}
+			for(Dice dice : dices){											//If ones reroll
+				if(dice.getScore() == 1)
+					dice.reroll();
+			}
+			
 			break;
 			
 		case 13://Full House
@@ -399,5 +513,33 @@ public class OptimizedAlgo {
 			}
 			break;
 		}
+	}
+	
+	/**
+	 * Private help method to calculate the probability mass function of P(X>=k).
+	 * 
+	 * @param n
+	 * @param k
+	 */
+	private static double probabilityMassFunction(int n, int k){
+		/*
+		 * The probability mass function is the sum of 
+		 * all probabilities for P(X<k) (the probabilities 
+		 * that k successes will occur in n attempts).
+		 */
+		double ret = 0;
+		double p=1/6;
+		for(int i = 0; i<=k; i++){
+			ret += (fact(n)/(fact(i)*fact(n-i)))*Math.pow(p, i)*Math.pow((1-p),n-i);
+		}
+		return 1-ret;
+	}
+	
+	private static int fact(int n){
+		int ret = 1;
+		for(int i = 1; i<=n; i++){
+			ret*=i;
+		}
+		return ret;
 	}
 }
