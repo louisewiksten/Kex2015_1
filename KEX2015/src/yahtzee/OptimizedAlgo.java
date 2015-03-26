@@ -23,8 +23,7 @@ public class OptimizedAlgo {
 			evaluate(dices, playableScore, i);
 		}
 		
-		//TODO
-		//Evaluate in which box to score the points.
+		scoring(dices, sc, playableScore);
 		
 	}
 	/**
@@ -52,6 +51,7 @@ public class OptimizedAlgo {
 				expValues[j] = probability(dices, values, rollsLeft)*expectedScore(j, values);
 			}
 		}
+		
 		//TODO
 		//Create evaluations for category 7-15.
 		/* Chance */
@@ -541,5 +541,13 @@ public class OptimizedAlgo {
 			ret*=i;
 		}
 		return ret;
+	}
+	
+	private static void scoring(Dice[] dices, ScoreCard sc, boolean[] playable){
+		for(int i = 0; i<16; i++){
+			if(playable[i]){
+				//TODO the scoring logic for algorithm.
+			}
+		}
 	}
 }
