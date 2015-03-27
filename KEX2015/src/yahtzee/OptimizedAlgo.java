@@ -41,7 +41,7 @@ public class OptimizedAlgo {
 		//ones to sixes
 		for(int j = 1; j<7;j++){
 			if(!playableScore[j]){
-				expValues[j] = -1;			//Category allready scored.
+				expValues[j] = -1;			//Category already scored.
 			}else{
 				for(int i=0;i<3;i++)
 					values[i] = j;		//First three scores sets to values.
@@ -82,8 +82,14 @@ public class OptimizedAlgo {
 		
 		//Create int array from dices for easier calculations.
 		int[] current = new int[5];
-		for(int i = 0; i<5; i++){
-			current[i] = dices[i].getScore();
+		if(dices == null){
+			for(int i = 0; i<5; i++){
+				current[i] = -1;
+			}
+		} else {
+			for(int i = 0; i<5; i++){
+				current[i] = dices[i].getScore();
+			}
 		}
 		Arrays.sort(current);
 		Arrays.sort(wanted);
@@ -210,10 +216,7 @@ public class OptimizedAlgo {
 				return 0;
 			}
 		case 14://Chance
-			for(int value : values){
-				ret+=value;
-			}
-			return ret;
+			return 0;
 		case 15://Yahtzee
 			return 50;
 		}
@@ -529,7 +532,7 @@ public class OptimizedAlgo {
 		 */
 		double ret = 0;
 		double p=1/6;
-		for(int i = 0; i<=k; i++){
+		for(int i = 0; i<k; i++){
 			ret += (fact(n)/(fact(i)*fact(n-i)))*Math.pow(p, i)*Math.pow((1-p),n-i);
 		}
 		return 1-ret;
@@ -544,10 +547,123 @@ public class OptimizedAlgo {
 	}
 	
 	private static void scoring(Dice[] dices, ScoreCard sc, boolean[] playable){
-		for(int i = 0; i<16; i++){
+		int[] diceResults = new int[5];
+		double bestScore = 0;
+		int row = 0;
+		for(int i = 0; i < 5; i++){
+			diceResults[i] = dices[i].getScore();
+		}
+		for(int i = 1; i<16; i++){
 			if(playable[i]){
-				//TODO the scoring logic for algorithm.
+				double temp = expectedScore(i,diceResults);
+				if(temp >= bestScore){
+					bestScore = temp;
+					row = i;
+				}
 			}
 		}
+		if(bestScore == 0){
+			if(playable[14]){//Chance
+				row = 14;
+			} else {
+				row = scratch(playable);
+			}
+		}
+		sc.setScore(diceResults, row);
+	}
+	
+	
+	private static int scratch(boolean[] playable){
+		double expVal = Double.MAX_VALUE;
+		int rowToDiscard = 0;
+		for(int i = 1; i < 16; i++){
+			if(playable[i]){
+				double thisVal = 0;
+				if(i < 7){
+					int[] val = {0,0,0,0,0};
+					int[] valNext = {i,0,0,0,0};
+					for(int j = 0; j<5; j++){
+						val[j] = i;
+						if(j < 4){
+							valNext[j+1] = i; //Used because the probability method calculates the chance of at least getting the result.
+							thisVal += expectedScore(i,val)*(probability(null,val,3)-probability(null,valNext,3));
+						}else{
+							thisVal += expectedScore(i,val)*(probability(null,val,3));
+						}
+						
+					}
+				} else if(i == 7){
+					int[] val = {1,1,0,0,0}; //Same probability to receive any pair.
+					double prob = probability(null,val,3);
+					for(int j = 0; j < 6; j++){
+						val[0] = j+1;
+						val[1] = j+1;
+						thisVal += expectedScore(i,val)*prob;
+					}
+				} else if(i == 8){
+					int[] val = {1,1,2,2,0}; //Same probability to receive any two pairs.
+					double prob = probability(null,val,3);
+					for(int j=0; j<6; j++){
+						for(int k=j+1;k<6;k++){
+							val[0] = j+1;
+							val[1] = j+1;
+							val[2] = k+1;
+							val[3] = k+1;
+							thisVal += expectedScore(i,val)*prob;
+						}
+					}
+				} else if(i == 9){
+					int[] val = {1,1,1,0,0}; //Same probability to receive any pair.
+					double prob = probability(null,val,3);
+					for(int j = 0; j < 6; j++){
+						val[0] = j+1;
+						val[1] = j+1;
+						val[2] = j+1;
+						thisVal += expectedScore(i,val)*prob;
+					}
+				} else if(i == 10){
+					int[] val = {1,1,1,0,0}; //Same probability to receive any three of a kind.
+					double prob = probability(null,val,3);
+					for(int j = 0; j < 6; j++){
+						val[0] = j+1;
+						val[1] = j+1;
+						val[2] = j+1;
+						thisVal += expectedScore(i,val)*prob;
+					}
+				} else if(i == 11){
+					int[] val = {1,1,1,1,0}; //Same probability to receive any four of a kind.
+					double prob = probability(null,val,3);
+					for(int j = 0; j < 6; j++){
+						val[0] = j+1;
+						val[1] = j+1;
+						val[2] = j+1;
+						val[3] = j+1;
+						thisVal += expectedScore(i,val)*prob;
+					}
+				} else if(i == 12){
+					int[] val = {1,2,3,4,5};
+					thisVal = 15*probability(null,val,3);
+				} else if(i == 13){
+					int[] val = {2,3,4,5,6};
+					thisVal = 20*probability(null,val,3);
+				} else if(i == 15){
+					int[] val = {1,1,1,1,1}; //Same probability to receive any yahtzee.
+					double prob = probability(null,val,3);
+					for(int j = 0; j < 6; j++){
+						val[0] = j+1;
+						val[1] = j+1;
+						val[2] = j+1;
+						val[3] = j+1;
+						val[4] = j+1;
+						thisVal += 50*prob;
+					}
+				}
+				if(thisVal < expVal){
+					rowToDiscard = i;
+				}
+			}
+		}
+		
+		return rowToDiscard;
 	}
 }

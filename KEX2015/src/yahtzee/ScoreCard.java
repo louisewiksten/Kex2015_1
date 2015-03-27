@@ -13,6 +13,7 @@ public class ScoreCard {
 	public String[] rowNames;
 	private int sum;
 	private final static int BONUSLIMIT = 63;
+	private boolean bonusSet = false;
 	
 	public ScoreCard(){
 		
@@ -142,6 +143,7 @@ public class ScoreCard {
 	}
 	
 	public int getTotalScore(){
+		addBonus();
 		return sum;
 	}
 	
@@ -150,8 +152,9 @@ public class ScoreCard {
 		for (int i = 1; i < 7; i++){
 			tempSum += results[i];
 		}
-		if(tempSum >= BONUSLIMIT){
+		if(tempSum >= BONUSLIMIT && !bonusSet){
 			sum += 50;
+			bonusSet = true;
 		}
 	}
 	
@@ -166,6 +169,8 @@ public class ScoreCard {
 	public static void main(String[] args){
 		ScoreCard sc = new ScoreCard();
 		ScoreCard sc2 = new ScoreCard();
+		ScoreCard sc3 = new ScoreCard();
+		
 		Dice[] dices = new Dice[5];
 		for (int i = 0; i<5; i++)
 			dices[i] = new Dice();
@@ -176,9 +181,15 @@ public class ScoreCard {
 				dices[j].reset(); //Start with roll 0 for each round.
 			}
 			HumanAlgo.play(dices, sc2);
+			for(int j = 0; j < 5; j++){
+				dices[j].reset(); //Start with roll 0 for each round.
+			}
+			FirstLookApproach.play(dices, sc3);
+			
 			for(Dice d : dices){
 				d.roll();
 			}
+			
 			System.out.print("\n"+ sc.rowNames[i] +": " + sc.getRowScore(i+1) + "p - ");
 			for(int index = 0; index<5; index++){
 				System.out.print(""+sc.getDiceRes()[i+1][index]+ " ");
@@ -186,7 +197,7 @@ public class ScoreCard {
 			
 			if(i == 5){ //Print part time score
 				System.out.print("\n-------------------" +
-						"\nSum of top rows: " + (sc.getTotalScore()));
+						"\nSum of top rows: " + (sc.getTopRowSum()));
 				if(sc.getTotalScore() >= 63){
 					System.out.print("\nBouns: 50\n-------------------");
 				} else{
@@ -194,6 +205,7 @@ public class ScoreCard {
 				}
 			}
 		}
+		
 		System.out.println("\n-------------------\nTotal Score: " + sc.getTotalScore());
 	
 		for (int i = 0; i<15; i++){
@@ -213,5 +225,22 @@ public class ScoreCard {
 			}
 		}
 		System.out.println("\n-------------------\nTotal Score: " + sc2.getTotalScore());
+		for (int i = 0; i<15; i++){
+			System.out.print("\n"+ sc3.rowNames[i] +": " + sc3.getRowScore(i+1) + "p - ");
+			for(int index = 0; index<5; index++){
+				System.out.print(""+sc3.getDiceRes()[i+1][index]+ " ");
+			}
+			
+			if(i == 5){ //Print part time score
+				System.out.print("\n-------------------" +
+						"\nSum of top rows: " + (sc3.getTopRowSum()));
+				if(sc3.getTopRowSum() >= 63){
+					System.out.print("\nBouns: 50\n-------------------");
+				} else{
+					System.out.print("\nBonus: 0\n-------------------");
+				}
+			}
+		}
+		System.out.println("\n-------------------\nTotal Score: " + sc3.getTotalScore());
 	}
 }
