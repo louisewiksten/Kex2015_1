@@ -97,7 +97,7 @@ public class HumanAlgo {
 		 * 	
 		 *
 		/* *** *** ONE THROW LEFT *** *** */	
-		} else if(rollsLeft == 1) { //TODO this method
+		} else if(rollsLeft == 1) { 
 			int[] tempScore = new int[5];
 			for(int i = 0; i<5; i++){
 				tempScore[i] = dices[i].getScore();
@@ -174,7 +174,7 @@ public class HumanAlgo {
 				return;
 				
 			/* * * TWO DICES ALIKE - 2 and 3 * * */
-			} else if(tempScore[1] == tempScore[2]){ //TODO
+			} else if(tempScore[1] == tempScore[2]){
 				/* * Three of a kind * */ 
 				if(tempScore[1]==tempScore[3]){
 					if(playableScores[(tempScore[1])] || tempScore[1] >= 3){ //This row free or worth going for threeOfAKind etc.
@@ -209,7 +209,7 @@ public class HumanAlgo {
 				return;
 				
 			/* * * TWO DICES ALIKE - 3 and 4 * * */	
-			} else if(tempScore[2] == tempScore[3]){ //TODO
+			} else if(tempScore[2] == tempScore[3]){
 				/* * Three of a kind * */ 
 				if(tempScore[2]==tempScore[4]){
 					if(playableScores[(tempScore[2])] || tempScore[2] >= 3){ //This row free or worth going for threeOfAKind etc.
@@ -227,7 +227,7 @@ public class HumanAlgo {
 				return;
 				
 			/* * * TWO DICES ALIKE - 4 and 5 * * */	
-			} else if(tempScore[3] == tempScore[4]){ //TODO
+			} else if(tempScore[3] == tempScore[4]){
 				for(Dice d : dices){
 					if(d.getScore() != tempScore[3])
 						d.reroll(); //Re-roll all other dices
