@@ -80,6 +80,7 @@ public class FirstLookApproach {
 					return;
 				}
 			}
+			
 			int bestRow = 0; //Keeps the row that is most frequent.
 			int rowCount = 0; //Keeps the number of dices with bestRow's value.
 			//--loop backwards through top rows--
@@ -97,31 +98,206 @@ public class FirstLookApproach {
 					}
 				}
 			}
-			if(rowCount > 2){
+			if(rowCount > 2){ //Two dices of this kind above!
 				for(Dice d : dices){
 					if(d.getScore() != bestRow)
-					d.reroll();
+						d.reroll();
 				}
 				return;
 			}
-			for(int i = 7; i < 16; i++){ 
+			
+			//Calculate the number of turns left!
+			int noPlayableRows = 0; //The number of playable rows for this turn;
+			for(int i = 1; i < 16; i++){
 				if(playableScores[i]){
-					
+					noPlayableRows++;
 				}
 			}
-			if(rowCount >= 2){
-				for(Dice d : dices){
-					if(d.getScore() != bestRow)
-					d.reroll();
+			if(noPlayableRows == 1){ //If one - go for one of this row.
+				for(int i = 1; i < 16; i++){
+					if(playableScores[i]){
+						if(i < 7){ //Go for this row and save only dices of this kind
+							for(Dice d : dices){
+								if(d.getScore() != i)
+									d.reroll();
+							}
+							break;
+						} 
+						if(i == 7){ //Pair row
+							if(tempScore[4] == tempScore[3]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[4])
+										d.reroll(); //Try to get better pair
+								}
+							} else if(tempScore[3] == tempScore[2]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[3])
+										d.reroll(); //Try to get better pair
+								}
+							} else if(tempScore[2] == tempScore[1]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[2])
+										d.reroll(); //Try to get better pair
+								}
+							} else if(tempScore[1] == tempScore[0]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[1])
+										d.reroll(); //Try to get better pair
+								}
+							}
+							break;
+						} else if(i == 8){ //TWO PAIRS
+							if(tempScore[4] == tempScore[3]){
+								if(tempScore[2] == tempScore[1]){
+									return; //Done!
+								} else if(tempScore[1] == tempScore[0]){
+									return; //Done!
+								} else{
+									for(Dice d : dices){
+										if(d.getScore() != tempScore[4] && d.getScore() != tempScore[2]) //best rows..
+											d.reroll();
+									}
+								}
+							} else if(tempScore[3] == tempScore[2]){
+								if(tempScore[1] == tempScore[0]){
+									return; //Done. 
+								} else{
+									for(Dice d : dices){
+										if(d.getScore() != tempScore[4] && d.getScore() != tempScore[2]) //best rows..
+											d.reroll();
+									}
+								}
+							} else if(tempScore[2] == tempScore[1]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[2] && d.getScore() != tempScore[4]) //Best rows!
+										d.reroll(); //Try to get second pair
+								}
+							} else if(tempScore[1] == tempScore[0]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[1] && d.getScore() != tempScore[4])//Best rows!
+										d.reroll(); //Try to get second pair
+								}
+							}
+							break;
+						} else if(i == 9 || i == 10){//Three/four of a kind
+							break;
+						} else if(i == 11){//Small straight
+							break;
+						} else if(i == 12){//Large straight
+							break;
+						} else if(i == 13){//Full house
+							if(tempScore[4] == tempScore[3]){
+								if(tempScore[4] == tempScore[2]){//Three of one kind.
+									if(tempScore[1] == tempScore[0]){
+										return; //Done!
+									} else{
+										for(Dice d : dices){
+											if(d.getScore() != tempScore[4] && d.getScore() != tempScore[2]) //best rows..
+												d.reroll();
+										}
+									}
+								}
+								if(tempScore[2] == tempScore[1]){
+									return; //Done!
+								} else if(tempScore[1] == tempScore[0]){
+									return; //Done!
+								} else{
+									for(Dice d : dices){
+										if(d.getScore() != tempScore[4] && d.getScore() != tempScore[2]) //best rows..
+											d.reroll();
+									}
+								}
+							} else if(tempScore[3] == tempScore[2]){
+								if(tempScore[1] == tempScore[0]){
+									return; //Done. 
+								} else{
+									for(Dice d : dices){
+										if(d.getScore() != tempScore[4] && d.getScore() != tempScore[2]) //best rows..
+											d.reroll();
+									}
+								}
+							} else if(tempScore[2] == tempScore[1]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[2] && d.getScore() != tempScore[4]) //Best rows!
+										d.reroll(); //Try to get second pair
+								}
+							} else if(tempScore[1] == tempScore[0]){
+								for(Dice d : dices){
+									if(d.getScore() != tempScore[1] && d.getScore() != tempScore[4])//Best rows!
+										d.reroll(); //Try to get second pair
+								}
+							}
+							break;
+						} else if(i == 14){//Chance
+							break;
+						} else if(i == 15){//Yahtzee
+							break;
+						}
+					}
 				}
 				return;
 			}
+			
+			if(hasLargeStraight(tempScore)){
+				return;
+			}
+			if(hasSmallStraight(tempScore)){
+				return;
+			}
+			
+			//Calculate which dice to save of 4,5 and 6.
+			int noFours = 0;
+			int noFives = 0;
+			int noSixes = 0;
+			for(int i = 0; i < 5; i++){
+				if(tempScore[i] == 4){
+					noFours++;
+				} else if(tempScore[i] == 5){
+					noFives++;
+				} else if(tempScore[i] == 6){
+					noSixes++;
+				}
+			}
+			
+			//Nothing worth going for of 4,5,6.
+			if(noFours == 0 || noFives == 0 || noSixes == 0){
+				if(rowCount >= 2){ //Two dices of this kind (1,2,3)! - only go for row.
+					for(Dice d : dices){
+						if(d.getScore() != bestRow)
+							d.reroll();
+					}
+				} else { //Re-roll all!!
+					for(Dice d : dices)
+						d.reroll();
+				}
+				return;
+			}
+			
+			int saveValue = 0; //Most common value
+			if(noFours > noFives){ //More fours than fives.
+				if(noFours > noSixes){ //More fours than sixes.
+					saveValue = 4;
+				} else{ //More or the same number of sixes compared to fours.
+					saveValue = 6;
+				}
+			} else { //More or the same number of fives compared to fours.
+				if(noFives > noSixes){ //More fives than sixes
+					saveValue = 5;
+				} else{ //More or the same number of sixes compared to fives.
+					saveValue = 6;
+				}
+			}
+			//Save sixes or fives (based on the most common).
+			for(Dice d : dices){
+				if(d.getScore() != saveValue)
+				d.reroll();
+			}				
+			return;
 			
 		}
 	}
 	
 	/**
-	 * 
 	 * @param dices A sorted array of dice results
 	 * @return True if it has large straight
 	 */
@@ -132,8 +308,7 @@ public class FirstLookApproach {
 		}
 		return false;
 	}
-	/**
-	 * 
+	/** 
 	 * @param dices A sorted array of dice results
 	 * @return True if it has small straight
 	 */
@@ -164,7 +339,7 @@ public class FirstLookApproach {
 					if(r == row)
 						rowSum += r;
 				}
-				if(rowSum <= row)
+				if(rowSum <= row*2) //Bonus check!
 					rowSum = 0;
 				if(rowSum >= 3*row)
 					rowSum += 50; //Bonus if more than three

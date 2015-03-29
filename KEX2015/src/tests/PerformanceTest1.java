@@ -17,7 +17,8 @@ public class PerformanceTest1 {
 		for (int i = 0; i<5; i++)
 			dices[i] = new Dice();
 		int totalScore = 0;
-		int[] scores = new int[runs]; //Print to an excel file?
+		int maxScore = 0;
+		//int[] scores = new int[runs]; //Print to an excel file?
 		for (int i = 0; i < runs; i++){
 			for (int j = 0; j<15; j++){
 				HumanAlgo.play(dices, sc);
@@ -27,12 +28,13 @@ public class PerformanceTest1 {
 				}
 			}
 			totalScore += sc.getTotalScore();
+			maxScore = Math.max(maxScore, sc.getTotalScore());
 			sc = new ScoreCard();
 		}
 		
 		System.out.println("During "+runs+" tests, the Human Algo algorithm got" +
 				" a total \nscore of: "+totalScore + " which means " + 
-		totalScore/((double) runs) + " is the average score.");
+		totalScore/((double) runs) + " is the average score.\nThe maximum score was: "+maxScore);
 		
 	}
 	

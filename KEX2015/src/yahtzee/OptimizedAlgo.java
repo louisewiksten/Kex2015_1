@@ -168,7 +168,8 @@ public class OptimizedAlgo {
 							i++;
 						}else{
 							tpair = values[i];
-							i=5; //break
+							j = 5;
+							i = 5;
 						}
 					}
 				}
@@ -179,7 +180,7 @@ public class OptimizedAlgo {
 				return 0;
 			}
 		case 9://Three of a kind
-			for(int i = 0; i<5; i++){
+			for(int i = 0; i<3; i++){
 				if(values[i] == values[i+1] && values[i] == values[i+2]){
 					ret = values[i];
 					break;

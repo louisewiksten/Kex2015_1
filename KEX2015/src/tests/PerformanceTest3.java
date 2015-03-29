@@ -1,13 +1,8 @@
 package tests;
 
 import yahtzee.*;
-/**
- * Performance test for the BruteAlgo yahtzee algorithm.The result score is the 
- * base for the tests.
- * @author louise
- *
- */
-public class PerformanceTest2 {
+
+public class PerformanceTest3 {
 	public static void main(String[] args){
 		final int runs = 100000; //The number of runs in this test. 
 		ScoreCard sc = new ScoreCard();
@@ -19,7 +14,7 @@ public class PerformanceTest2 {
 		//int[] scores = new int[runs]; //Print to an excel file?
 		for (int i = 0; i < runs; i++){
 			for (int j = 0; j<15; j++){
-				BruteAlgo.play(dices, sc);
+				OptimizedAlgo.play(dices, sc);
 				
 				for(Dice d : dices){
 					d.roll();
@@ -30,7 +25,7 @@ public class PerformanceTest2 {
 			sc = new ScoreCard();
 		}
 		
-		System.out.println("During "+runs+" tests, the Brute Force algorithm got" +
+		System.out.println("During "+runs+" tests, the Optimized Algorithm got" +
 				" a total \nscore of: "+totalScore + " which means " + 
 		totalScore/((double) runs) + " is the average score.\nThe maximum score was: "+maxScore);
 		

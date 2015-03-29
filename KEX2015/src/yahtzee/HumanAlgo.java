@@ -641,10 +641,13 @@ public class HumanAlgo {
 			case 6: 
 				for(int r : rolls){
 					if(r == row)
-						rowSum += r;
-					if(rowSum >= 3*row)
-						rowSum += 50; //Bonus if more than three
+						rowSum += r;	
 				}
+				if(rowSum < 2*row){
+					rowSum = 0; //Discard this row and rather scratch in score card.
+				}
+				if(rowSum >= 3*row)
+					rowSum += 50; //Bonus if more than three
 				break;
 			case 7: 
 				for(int i = 4; i > 0; i--)
