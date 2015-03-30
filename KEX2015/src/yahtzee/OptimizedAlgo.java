@@ -295,7 +295,8 @@ public class OptimizedAlgo {
 		n *= rollsLeft;
 		
 		prob = probabilityMassFunction(n,k);
-		
+		//System.out.println("Probability for getting: "+wanted[0]+","+wanted[1]+","+wanted[2]+","+wanted[3]+","+wanted[4]+" from " +
+		//		current[0]+","+current[1]+","+current[2]+","+current[3]+","+current[4]+" is "+prob);
 		return prob;										//Return calculated probability.
 	}
 	/**
@@ -523,7 +524,7 @@ public class OptimizedAlgo {
 						save = scores[i];
 				}
 				if(save == 0){												//No three
-					for(int i = 0; i<5; i++){								//Check for pair
+					for(int i = 0; i<4; i++){								//Check for pair
 						if(scores[i] == scores[i+1])
 							save = scores[i];
 					}
@@ -553,25 +554,30 @@ public class OptimizedAlgo {
 				save = 0;
 			}
 			//We don't have a small straight.
-			for(int i = 0; i<5; i++){										//Remove sixes from scores, they will allways reroll.
+			for(int i = 0; i<5; i++){										//Remove sixes from scores, they will always re-roll.
 				if(scores[i] == 6)
 					scores[i] = 0;
 			}
-
-			for(int i = 0; i<5; i++){										//For all scores
-				if(scores[i] == scores[i+1]){								//If a pair reroll.
-					for(Dice dice : dices){
-						if(dice.getScore() == scores[i]){
-							dice.reroll();
+			boolean[] rerolled = new boolean[5]; 							//Keep track of re-rolled dices!
+			for(int i = 0; i < 5; i++){											//If six reroll
+				if(dices[i].getScore() == 6){
+					dices[i].reroll();
+					rerolled[i] = true;
+				}
+			}
+			
+			for(int i = 0; i<4; i++){										//For all scores
+				if(scores[i] == scores[i+1]){								//If a pair 
+					for(int j = 0; j < 4; j++){								//reroll one dice of that value.
+						if(!rerolled[j] && dices[j].getScore() == scores[i]){
+							dices[j].reroll();
+							rerolled[j] = true;
 							break;
 						}
 					}
 				}
 			}
-			for(Dice dice : dices){											//If six reroll
-				if(dice.getScore() == 6)
-					dice.reroll();
-			}
+			
 			
 			break;
 			
@@ -590,25 +596,29 @@ public class OptimizedAlgo {
 			}else{
 				save = 0;
 			}
+			rerolled = new boolean[5]; 							//Keep track of re-rolled dices!
 			//We don't have a large straight.
-			for(int i = 0; i<5; i++){										//Remove ones from scores, they will allways reroll.
+			for(int i = 0; i<5; i++){										//Remove ones from scores, they will always re-roll.
 				if(scores[i] == 1)
 					scores[i] = 0;
 			}
-
-			for(int i = 0; i<5; i++){										//For all scores
+			for(int i = 0; i < 5; i++){											//If ones reroll
+				if(dices[i].getScore() == 1){
+					dices[i].reroll();
+					rerolled[i] = true;
+				}
+			}
+			
+			for(int i = 0; i<4; i++){										//For all scores
 				if(scores[i] == scores[i+1]){								//If a pair 
-					for(Dice dice : dices){									//reroll one dice of that value.
-						if(dice.getScore() == scores[i]){
-							dice.reroll();
+					for(int j = 0; j < 4; j++){								//reroll one dice of that value.
+						if(!rerolled[j] && dices[j].getScore() == scores[i]){
+							dices[j].reroll();
+							rerolled[j] = true;
 							break;
 						}
 					}
 				}
-			}
-			for(Dice dice : dices){											//If ones reroll
-				if(dice.getScore() == 1)
-					dice.reroll();
 			}
 			
 			break;
@@ -628,7 +638,7 @@ public class OptimizedAlgo {
 				}
 			}
 			if(first == 0){													//Don't have three of a kind.
-				for(int i = 0; i<5; i++){									//Find pair
+				for(int i = 0; i<4; i++){									//Find pair
 					if(scores[i] == scores[i+1]){
 						first = scores[i];
 					}
@@ -698,24 +708,27 @@ public class OptimizedAlgo {
 	 * @param n
 	 * @param k
 	 */
-	private static double probabilityMassFunction(int n, int k){
+	public static double probabilityMassFunction(int n, int k){
 		/*
 		 * The probability mass function is the sum of 
 		 * all probabilities for P(X<k) (the probabilities 
 		 * that k successes will occur in n attempts).
 		 */
 		double ret = 0;
-		double p=1/6;
+		double p=1.0/6;
 		for(int i = 0; i<k; i++){
-			ret += (fact(n)/(fact(i)*fact(n-i)))*Math.pow(p, i)*Math.pow((1-p),n-i);
+			double d1 = (fact(n)/(fact(i)*fact(n-i)));
+			double d2 = Math.pow(p, (double)i);
+			double d3 = Math.pow((1.0-p),(double)(n-i));
+			ret += d1*d2*d3;
 		}
 		return 1-ret;
 	}
 	
-	private static int fact(int n){
-		int ret = 1;
+	private static double fact(double n){
+		double ret = 1;
 		for(int i = 1; i<=n; i++){
-			ret*=i;
+			ret*=(double) i;
 		}
 		return ret;
 	}
@@ -833,11 +846,11 @@ public class OptimizedAlgo {
 					}
 				}
 				if(thisVal < expVal){
+					thisVal=expVal;
 					rowToDiscard = i;
 				}
 			}
 		}
-		
 		return rowToDiscard;
 	}
 }
