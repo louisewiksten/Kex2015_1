@@ -308,47 +308,91 @@ public class OptimizedAlgo {
 	 */
 	private static double expectedScore(int category, int[] values){
 		int ret = 0;
+		Arrays.sort(values);
 		switch(category){
 		case 1:
+			for(int value : values){
+				if(value == category)
+					ret+=value;
+			}
+			if(ret >= category*3){				
+				ret+=50;
+			}
+			if(expectedScore(15,values) != 0){
+				if(values[0] == category)
+					ret = 49;
+			}
+			return ret;
 		case 2:
+			for(int value : values){
+				if(value == category)
+					ret+=value;
+			}
+			if(ret <= category){
+				ret = 0;
+			} else if(ret >= category*3){				
+				ret+=50;
+			}
+			if(expectedScore(15,values) != 0){
+				if(values[0] == category)
+					ret = 49;
+			}
+			return ret;
 		case 3:
 		case 4:
 		case 5:
+			for(int value : values){
+				if(value == category)
+					ret+=value;
+			}
+			if(ret <= category*2){
+				ret = 0;
+			} else if(ret >= category*3){				
+				ret+=50;
+			}
+			if(expectedScore(15,values) != 0){
+				if(values[0] == category)
+					ret = 49;
+			}
+			return ret;
 		case 6:
 			for(int value : values){
-				ret+=value;
+				if(value == category)
+					ret+=value;
 			}
-			if(ret >= category*3){
+			if(ret <= category*2){
+				ret = 0;
+			} else if(ret >= category*3){
 				ret+=50;
 			}
 			return ret;
 		case 7://Pair
 			for(int i = 0; i<4; i++){
-				for(int j = i+1; j<5;j++){
-					if(values[i]==values[j]){
-						ret = values[i];
-					}
+				if(values[i]==values[i+1]){
+					ret = values[i];
 				}
+			}
+			if(ret < 4){
+				ret = 0;
 			}
 			return (ret*2);
 		case 8://Two pairs
 			int fpair = 0;
 			int tpair = 0;
 			for(int i = 0; i<4;i++){
-				for(int j = i+1; j<5; j++){
-					if(values[i] == values[j]){	
-						if(fpair==0){
-							fpair = values[i];
-							i++;
-						}else{
+				if(values[i] == values[i+1]){	
+					if(fpair==0){
+						fpair = values[i];
+						i++;
+					}else{
+						if(fpair != values[i]){
 							tpair = values[i];
-							j = 5;
 							i = 5;
 						}
 					}
 				}
 			}
-			if(tpair > 0 && fpair > 0){
+			if(tpair > 1 && fpair > 0){
 				return (2*fpair + 2*tpair);
 			}else{
 				return 0;
@@ -359,23 +403,29 @@ public class OptimizedAlgo {
 					ret = values[i];
 					break;
 				}
+			} 
+			if(ret < 2){
+				ret = 0;
 			}
 			return ret*3;
 		case 10://Four of a kind
 			for(int i = 0; i<2; i++){
 				if(values[i]==values[i++] && values[i] == values[i+2] && values[i] == values[i+3]){
-					return values[i]*4;
+					ret = values[i]*4;
+					break;
 				}
 			}
+			if(ret < 8){
+				ret = 0;
+			}
+			return ret;
 		case 11://Small Straight
-			Arrays.sort(values);
 			if(values[0]==1 && values[1]==2 && values[2] == 3 && values[3] == 4 && values[4] == 5){
 				return 15;
 			}else{
 				return 0;
 			}
 		case 12://Large Straight
-			Arrays.sort(values);
 			if(values[0]==2 && values[1]==3 && values[2] == 4 && values[3] == 5 && values[4] == 6){
 				return 20;
 			}else{
@@ -383,9 +433,9 @@ public class OptimizedAlgo {
 			}
 		case 13://Full House
 			Arrays.sort(values);
-			if(values[0] == values[1] && values[0] == values[2] && values[3] == values[4]){ 
+			if(values[0] == values[2] && values[3] == values[4] && values[0]!=values[4]){ 
 				return (3*values[0] + 2*values[3]); //Small three big pair
-			} else if(values[0] == values[1] && values[2] == values[3] && values[3] == values[4]){
+			} else if(values[0] == values[1] && values[2] == values[4] && values[0]!=values[4]){
 				return 2*values[0] + 3*values[2]; //Small pair big three
 			} else {
 				return 0;
@@ -393,7 +443,9 @@ public class OptimizedAlgo {
 		case 14://Chance
 			return 0;
 		case 15://Yahtzee
-			return 50;
+			if(values[0] == values[4])
+				return 50;
+			return 0;
 		}
 		return -1; //error, this should not occur!
 	}
@@ -750,12 +802,14 @@ public class OptimizedAlgo {
 			}
 		}
 		if(bestScore == 0){
+			//System.out.println("Scratching");
 			if(playable[14]){//Chance
 				row = 14;
 			} else {
 				row = scratch(playable);
 			}
 		}
+		//System.out.println("The row to be filled in: "+row + " and the score was: "+diceResults[0]+", "+diceResults[1]+", "+diceResults[2] +", "+diceResults[3] +", "+diceResults[4]);
 		sc.setScore(diceResults, row);
 	}
 	
@@ -809,16 +863,7 @@ public class OptimizedAlgo {
 						thisVal += expectedScore(i,val)*prob;
 					}
 				} else if(i == 10){
-					int[] val = {1,1,1,0,0}; //Same probability to receive any three of a kind.
-					double prob = probability(null,val,3);
-					for(int j = 0; j < 6; j++){
-						val[0] = j+1;
-						val[1] = j+1;
-						val[2] = j+1;
-						thisVal += expectedScore(i,val)*prob;
-					}
-				} else if(i == 11){
-					int[] val = {1,1,1,1,0}; //Same probability to receive any four of a kind.
+					int[] val = {1,1,1,1,0}; //Same probability to receive any three of a kind.
 					double prob = probability(null,val,3);
 					for(int j = 0; j < 6; j++){
 						val[0] = j+1;
@@ -827,12 +872,25 @@ public class OptimizedAlgo {
 						val[3] = j+1;
 						thisVal += expectedScore(i,val)*prob;
 					}
+				} else if(i == 11){
+					int[] val = {1,2,3,4,5}; //Same probability to receive any four of a kind.
+					double prob = probability(null,val,3);
+					thisVal += expectedScore(i,val)*prob;
+					
 				} else if(i == 12){
-					int[] val = {1,2,3,4,5};
-					thisVal = 15*probability(null,val,3);
-				} else if(i == 13){
 					int[] val = {2,3,4,5,6};
 					thisVal = 20*probability(null,val,3);
+				} else if(i == 13){
+					int[] val = new int[5];
+					for (int j = 1; j<=6; j++){
+						for(int k = 1; k<=6; k++){
+							if(j == k){
+								continue;
+							}
+							val = new int[]{j,j,j,k,k};
+							thisVal += expectedScore(i,val)*probability(null,val,3);
+						}
+					}
 				} else if(i == 15){
 					int[] val = {1,1,1,1,1}; //Same probability to receive any yahtzee.
 					double prob = probability(null,val,3);
@@ -846,7 +904,7 @@ public class OptimizedAlgo {
 					}
 				}
 				if(thisVal < expVal){
-					thisVal=expVal;
+					expVal=thisVal;
 					rowToDiscard = i;
 				}
 			}
