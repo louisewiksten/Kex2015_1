@@ -37,8 +37,9 @@ public class OptimizedAlgo {
 	public static void evaluate(Dice[] dices, boolean[] playableScore, int rollsLeft){
 		double[] expValues = new double[16];
 		int[] values = new int[5];
+		int[] tmp = new int[5];
 		
-		//ones to sixes
+		//ones to sixes  ****************************************************************************
 		for(int j = 1; j<7;j++){
 			if(!playableScore[j]){
 				expValues[j] = -1;			//Category already scored.
@@ -51,12 +52,184 @@ public class OptimizedAlgo {
 				expValues[j] = probability(dices, values, rollsLeft)*expectedScore(j, values);
 			}
 		}
+		for(int i = 0; i<5; i++)
+			tmp[i] = dices[i].getScore();
+		Arrays.sort(tmp);
 		
-		//TODO
-		//Create evaluations for category 7-15.
-		/* Chance */
+		//Pair (7) ****************************************************************************
+		for(int i = 0; i<4; i++){
+			if(tmp[i] == tmp[i+1]){
+				values = new int[] {i,i,0,0,0};
+				expValues[7] = expectedScore(7, values);
+			}
+		}
+		
+		//Two pair (8) ****************************************************************************
+		for(int i = 0; i<5; i++){
+			if(tmp[i] == tmp[i]){				//First pair found
+				for(int j = i+2; j<4; j++){
+					if(tmp[j] == tmp[j+1]){		//Second pair found
+						values = new int[] {i,i,j,j,0};
+						expValues[8] = expectedScore(8, values);
+					}
+				}
+				if(expValues[8] == 0){			//Only on pair found
+					for(int j = 0; j<5; j++){
+						if(tmp[i] != tmp[j]){
+							values = new int[] {tmp[i],tmp[i],tmp[j],tmp[j],0};
+							expValues[8] = probability(dices, values, rollsLeft)*expectedScore(8,values);
+						}
+					}
+				}
+				break;
+			}
+		}
+		if(expValues[8] == 0){					//No pairs found
+			values = new int[] {tmp[4],tmp[4],tmp[3],tmp[3],0};
+			expValues[8] = probability(dices, values, rollsLeft)*expectedScore(8,values);
+		}
+		
+		//Three of a kind (9) ****************************************************************************
+		for(int i = 0; i<3; i++){
+			if(tmp[i] == tmp[i+2]){
+				values = new int[] {tmp[i],tmp[i],tmp[i],0,0};
+				expValues[9] = expectedScore(9, values);
+			}
+		}
+		if(expValues[9] == 0){//Pair
+			for(int i = 0; i<4; i++){
+				if(tmp[i] == tmp[i+1]){
+					values = new int[] {tmp[i], tmp[i], tmp[i], 0,0};
+					expValues[9] = probability(dices, values, rollsLeft)*expectedScore(9, values);
+				}
+			}
+		}
+		
+		if(expValues[9] == 0){//Highest available
+			int i = 4;
+			values = new int[] {tmp[i], tmp[i], tmp[i], 0,0};
+			expValues[9] = probability(dices, values, rollsLeft)*expectedScore(9, values);
+		}
+		
+		//Four of a kind (10) ****************************************************************************
+		for(int i = 0; i<2; i++){
+			if(tmp[i] == tmp[i+3]){
+				values = new int[] {tmp[i],tmp[i],tmp[i],tmp[i],0};
+				expValues[10] = expectedScore(10, values);
+			}
+		}
+		if(expValues[10] == 0){
+			for(int i = 0; i<3; i++){//Three of a kind
+				if(tmp[i] == tmp[i+2]){
+					values = new int[] {tmp[i],tmp[i],tmp[i],tmp[i],0};
+					expValues[10] = expectedScore(10, values);
+				}
+			}
+		}
+		
+		if(expValues[10] == 0){//Pair
+			for(int i = 0; i<4; i++){
+				if(tmp[i] == tmp[i+1]){
+					values = new int[] {tmp[i], tmp[i], tmp[i], tmp[i],0};
+					expValues[10] = probability(dices, values, rollsLeft)*expectedScore(10, values);
+				}
+			}
+		}
+		
+		if(expValues[10] == 0){//Highest available
+			int i = 4;
+			values = new int[] {tmp[i], tmp[i], tmp[i], tmp[i],0};
+			expValues[10] = probability(dices, values, rollsLeft)*expectedScore(10, values);
+		}
+		
+		//Small Straight ****************************************************************************
+		values = new int[] {1,2,3,4,5};
+		expValues[11] = probability(dices, values, rollsLeft)*expectedScore(11, values);
+		
+		//Large Straight ****************************************************************************
+		values = new int[] {2,3,4,5,6};
+		expValues[12] = probability(dices, values, rollsLeft)*expectedScore(11, values);
+		
+		//Full House  ****************************************************************************
+		
+		int pair = 0;
+		int thrice = 0;
+		for(int i = 0; i<3; i++){ //Three of a kind
+			if(tmp[i] == tmp[i+2]){
+				thrice = tmp[i];
+			}
+		}
+		
+		for(int i = 0; i<4; i++){ //Pair
+			if(tmp[i] == tmp[i+1] && tmp[i] != thrice){
+				pair = tmp[i];
+			}
+		}
+		
+		if(thrice == 0 && pair == 0){ //No pair or thrice
+			values = new int[] {pair,pair,thrice,thrice,thrice};
+			expValues[13] = probability(dices, values, rollsLeft)*expectedScore(13, values);
+			
+		} else if(thrice == 0 && pair != 0){ //No thrice
+			for(int i = 0; i<5; i++){
+				if(tmp[i] != pair)
+					thrice = tmp[i];
+			}
+			values = new int[] {pair, pair,thrice,thrice,thrice};
+			expValues[13] = probability(dices, values, rollsLeft)*expectedScore(13, values);
+			
+		} else if(pair == 0 && thrice != 0){ //No Pair
+			for(int i = 0; i<5; i++){
+				if(tmp[i] != thrice)
+					pair = tmp[i];
+			}
+			values = new int[] {pair, pair,thrice,thrice,thrice};
+			expValues[13] = probability(dices, values, rollsLeft)*expectedScore(13, values);
+			
+		} else { //FULL HOUSE!!
+			values = new int[] {pair,pair,thrice,thrice,thrice};
+			expValues[13] = expectedScore(13, values);
+		}
+		//Chance ****************************************************************************
 		expValues[14] = 0; //Never calculate value for chance, use chance when all else fails.
 		
+		//Yahtzee ****************************************************************************
+		if(tmp[0] == tmp[4]){
+			int i = 0;
+			values = new int[] {tmp[i],tmp[i],tmp[i],tmp[i],tmp[i]};
+			expValues[15] = expectedScore(15, values);
+		}
+		
+		if(expValues[15] == 0){
+			for(int i = 0; i<2; i++){//Four of a kind
+				if(tmp[i] == tmp[i+3]){
+					values = new int[] {tmp[i],tmp[i],tmp[i],tmp[i],tmp[i]};
+					expValues[9] = expectedScore(9, values);
+				}
+			}
+		}
+		if(expValues[15] == 0){
+			for(int i = 0; i<3; i++){//Three of a kind
+				if(tmp[i] == tmp[i+2]){
+					values = new int[] {tmp[i],tmp[i],tmp[i],tmp[i],tmp[i]};
+					expValues[9] = expectedScore(9, values);
+				}
+			}
+		}
+		if(expValues[9] == 0){//Pair
+			for(int i = 0; i<4; i++){
+				if(tmp[i] == tmp[i+1]){
+					values = new int[] {tmp[i], tmp[i], tmp[i], tmp[i], tmp[i]};
+					expValues[9] = probability(dices, values, rollsLeft)*expectedScore(9, values);
+				}
+			}
+		}
+		
+		if(expValues[9] == 0){//Highest available
+			int i = 4;
+			values = new int[] {tmp[i], tmp[i], tmp[i], tmp[i],0};
+			expValues[9] = probability(dices, values, rollsLeft)*expectedScore(9, values);
+		}
 		
 		int maxCategory = 0;
 		double maxExpScore = 0;
@@ -477,7 +650,7 @@ public class OptimizedAlgo {
 					}
 				}
 			} else { 														//find a pair or decide what to save as second.
-				for(int i = 0; i<5; i++){
+				for(int i = 0; i<4; i++){
 					if(scores[i] == scores[i+1] && scores[i] != first){		//not equal to the chosen three of a kind.
 						second = scores[i];
 					}
