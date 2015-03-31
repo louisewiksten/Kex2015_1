@@ -7,7 +7,7 @@ import yahtzee.*;
  * @author louise
  *
  */
-public class PerformanceTest1 {
+public class PerformanceTestHumanAlgo {
 	
 	
 	public static void main(String[] args){
