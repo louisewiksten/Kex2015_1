@@ -284,13 +284,12 @@ public class OptimizedAlgo {
 		//Calculate k t use in fromula
 		int k = 0;
 		for(int i = 0; i<5; i++){
-			for(int j = 0; j<5; j++){
-				if(wanted[i]==0){
-					k++;
-					break;
-				}
+			if(wanted[i]==0){
+				k++;
+				break;
 			}
 		}
+		
 		k = n-k;
 		n *= rollsLeft;
 		
@@ -410,7 +409,7 @@ public class OptimizedAlgo {
 			return ret*3;
 		case 10://Four of a kind
 			for(int i = 0; i<2; i++){
-				if(values[i]==values[i++] && values[i] == values[i+2] && values[i] == values[i+3]){
+				if(values[i]==values[i+1] && values[i] == values[i+2] && values[i] == values[i+3]){
 					ret = values[i]*4;
 					break;
 				}
