@@ -2,7 +2,7 @@ package tests;
 
 import yahtzee.*;
 
-public class PerformanceTest3 {
+public class PerformanceTestOptimizedHumanAlgo {
 	public static void main(String[] args){
 		final int runs = 100000; //The number of runs in this test. 
 		ScoreCard sc = new ScoreCard();

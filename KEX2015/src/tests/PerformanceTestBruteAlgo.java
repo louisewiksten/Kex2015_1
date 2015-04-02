@@ -7,7 +7,7 @@ import yahtzee.*;
  * @author louise
  *
  */
-public class PerformanceTest2 {
+public class PerformanceTestBruteAlgo {
 	public static void main(String[] args){
 		final int runs = 100000; //The number of runs in this test. 
 		ScoreCard sc = new ScoreCard();
