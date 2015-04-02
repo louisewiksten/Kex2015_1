@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * A ScoreCard class that keeps the results of the game.
  * 
- * @author D.Jendeberg and L.Wikstén
+ * @author D.Jendeberg and L.WikstŽn
  */
 public class ScoreCard {
 	private int[] results;
@@ -15,16 +15,20 @@ public class ScoreCard {
 	private final static int BONUSLIMIT = 63;
 	private boolean bonusSet = false;
 	
+	/**
+	 * Create a score card class with 15 rows for the game and containers 
+	 * for all data that is to be saved.
+	 */
 	public ScoreCard(){
 		
-		results = new int[16]; //Change to n.o. lines
+		results = new int[16]; //Number of rows.
 		for(int i = 1; i<16; i++){
 			results[i]=-1;
 		}
 		diceResults = new int[16][5];
 		rowNames = new String[16];
 		sum = 0;
-		//For prints
+		//For prints these names are used.
 		rowNames[0]="Ones";
 		rowNames[1]="Twos";
 		rowNames[2]="Threes";
@@ -41,10 +45,19 @@ public class ScoreCard {
 		rowNames[13]="Chance";
 		rowNames[14]="Yahtzee";
 	}
+	/**
+	 * Get all the dices and their results as a matrix.
+	 * @return The dice results.
+	 */
 	public int[][] getDiceRes(){
 		return diceResults;
 	}
 	
+	/**
+	 * Get the score for a certain row.
+	 * @param row The desired row.
+	 * @return The score of the given row. -1 if not set.
+	 */
 	public int getRowScore(int row){
 		return results[row];
 	}
@@ -52,8 +65,8 @@ public class ScoreCard {
 	/**
 	 * This Method is used to set the score for a certain row in the scorecard. 
 	 * It calculates the score depending on the set of dices and which row is selected.
-	 * @param rolls
-	 * @param row
+	 * @param rolls The dice values.
+	 * @param row The row to put the score on.
 	 */
 	public void setScore(int[] rolls, int row){
 		int rowSum = 0;
@@ -142,11 +155,18 @@ public class ScoreCard {
 		results[row] = rowSum;
 	}
 	
+	/**
+	 * Get the total current score of the game with bonus added.
+	 * @return The current score of the game.
+	 */
 	public int getTotalScore(){
 		addBonus();
 		return sum;
 	}
 	
+	/**
+	 * Add bonus to the score. If already set, do nothing.
+	 */
 	public void addBonus(){
 		int tempSum = 0;
 		for (int i = 1; i < 7; i++){
@@ -158,6 +178,10 @@ public class ScoreCard {
 		}
 	}
 	
+	/**
+	 * Get the score of the top 6 rows.
+	 * @return The current score of the top 6 rows.
+	 */
 	public int getTopRowSum(){
 		int tempSum = 0;
 		for (int i = 1; i < 7; i++){
@@ -185,7 +209,7 @@ public class ScoreCard {
 			for(int j = 0; j < 5; j++){
 				dices[j].reset(); //Start with roll 0 for each round.
 			}
-			FirstLookApproach.play(dices, sc3);
+			TestFirstLookApproach.play(dices, sc3);
 			for(int j = 0; j < 5; j++){
 				dices[j].reset(); //Start with roll 0 for each round.
 			}*/

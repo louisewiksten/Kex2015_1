@@ -2,7 +2,7 @@ package yahtzee;
 
 import java.util.Arrays;
 
-public class FirstLookApproach {
+public class TestFirstLookApproach {
 	/**
 	 * Play method to simulate a game of solitaire yahtzee.
 	 * 

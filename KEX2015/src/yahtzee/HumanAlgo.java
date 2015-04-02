@@ -383,11 +383,11 @@ public class HumanAlgo {
 					}
 					return;
 				} else if(tempScore[3]==tempScore[4]){//Two pairs - maybe go for full house
-					if(playableScores[13]){ //Full house possible
+					if(playableScores[13] || playableScores[8]){ //Full house possible or two pair 
+																// re-roll for getting three of a kind
 						for(Dice d : dices) 
 							if(d.getScore() < tempScore[1]) //Re-roll the only dice of one kind
 								d.reroll(); //Re-roll for full house!
-					} else if(playableScores[8]){ //Two pairs possible-Already got two pairs
 						return;
 					} else { //re-roll dice with lowest value. 
 						if(playableScores[(tempScore[4])]){ //Possible to go for 1-6 (highest value.)
@@ -423,21 +423,21 @@ public class HumanAlgo {
 					return;
 				}
 				if(playableScores[11]){ //Is small straight free?
-					if(tempScore[4] != 6) //All other values correct for sm.straight.
+					if(tempScore[4] != 6){ //All other values correct for sm.straight.
 						for(Dice d : dices){ 
 							if(d.getScore() == tempScore[1]){ //Re-roll the dice that doesn't match.
 								d.reroll();
 								break;
 							}
 						}
-					return;
-				} else {
-					for (int i = 0; i < 5; i++){
-						if(dices[i].getScore() < 6)
-							dices[i].reroll();
+						return;
 					}
-					return;
+				} 
+				for (int i = 0; i < 5; i++){
+					if(dices[i].getScore() < 6)
+						dices[i].reroll();
 				}
+				return;
 				
 				
 			
