@@ -823,7 +823,7 @@ public class NewOptimalAlgorithm {
 	 *            Number of rolls left.
 	 * @return
 	 */
-	private static double probability(int[] current, int[] wanted, int rollsLeft) {
+	public static double probability(int[] current, int[] wanted, int rollsLeft) {
 		if(current == null){
 			current = new int[]{-1,-1,-1,-1,-1};
 		}
