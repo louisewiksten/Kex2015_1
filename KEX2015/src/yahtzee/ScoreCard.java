@@ -185,7 +185,8 @@ public class ScoreCard {
 	public int getTopRowSum(){
 		int tempSum = 0;
 		for (int i = 1; i < 7; i++){
-			tempSum += results[i];
+			if(tempSum != -1)
+				tempSum += results[i];
 		}
 		return tempSum;
 	}
