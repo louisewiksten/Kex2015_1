@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author D.Jendeberg and L.Wikstén
  */
 public class BruteAlgo {
-	
+	static boolean prints = true; //Set this to true to get printouts. 
 	/**
 	 *  Play method to simulate a game of solitare yahtzee.
 	 *  
@@ -31,6 +31,11 @@ public class BruteAlgo {
 		int[] list = new int[5];
 		for(int i = 0; i < 5; i++)
 			list[i] = dices[i].getScore();
+		if(prints){
+			System.out.println("\nSetting dice values " + list[0] + ", "+ list[1] + 
+					", " + list[2] + ", "+ list[3] + ", " + list[4]+ " on row "+ 
+					turn + " in Brute Force Algorithm.");
+		}
 		sc.setScore(list, turn);
 	}
 	/**
@@ -52,15 +57,30 @@ public class BruteAlgo {
 		case 5: //Fives
 		case 6: //Sixes
 			//1-6 just save the turn values.
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			for(int i=0;i<5;i++){
 				if(dices[i].getScore()==turn){
 					//Do nothing
 				} else {
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
 				}
 			}
 			break;
 		case 7: //Pair
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			pair = false;
 			scores = new int[5];
 			for(int i = 0; i<5; i++){			//Get all scores.
@@ -74,13 +94,23 @@ public class BruteAlgo {
 			if(pair) 							//If pair found.
 				break;
 			for(Dice d : dices){ 				//No pair found
-				if(d.getScore() != scores[4])	//ReRoll all
+				if(d.getScore() != scores[4]){	//ReRoll all
+					if(prints){
+						System.out.print(d.getScore() + " ");
+					}
 					d.reroll();
+				}
 			}
 			break;
 		case 8: //Two pairs
 			//Two pair, two dices should be equal and another pair should also equal but not equal to the first.
 			//first part, find if to dices equal.
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			int[] firstpair = new int[2];
 			int[] secondpair = new int[2];
 			for(int j = 0; j<4; j++){										//For dice 1-4 see if there are any dices equal to it in 2-5.
@@ -99,11 +129,18 @@ public class BruteAlgo {
 			}
 			//Second part, if pairs found do nothing otherwise reroll.
 			if(firstpair[0] == 0 && firstpair[1] == 0){
-				for(Dice d : dices)
+				for(Dice d : dices){
+					if(prints){
+						System.out.print(d.getScore() + " ");
+					}
 					d.reroll();
+				}
 			} else if(secondpair[0] == 0 && secondpair[1] == 0){
 				for(int i = 0; i<5; i++){
 					if(i != firstpair[0] || i != firstpair[1]){
+						if(prints){
+							System.out.print(dices[i].getScore() + " ");
+						}
 						dices[i].reroll();
 					}
 				}
@@ -112,6 +149,12 @@ public class BruteAlgo {
 			}
 			break;
 		case 9: //Threesome
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			trice = false;
 			pair = false;
 			int pairValue = 0;
@@ -135,15 +178,29 @@ public class BruteAlgo {
 				break;
 			if(pair){
 				for(Dice d : dices){
-					if(d.getScore() != pairValue)
+					if(d.getScore() != pairValue){
+						if(prints){
+							System.out.print(d.getScore() + " ");
+						}
 						d.reroll();
+					}
 				}
 				break;
 			}
-			for(Dice d : dices)
+			for(Dice d : dices){
+				if(prints){
+					System.out.print(d.getScore() + " ");
+				}
 				d.reroll();
+			}
 			break;
 		case 10: //Foursome
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			pair = false;
 			trice = false;
 			foursome = false;
@@ -180,12 +237,21 @@ public class BruteAlgo {
 			if(!foursome){
 				for(Dice d : dices){
 					if(d.getScore() != bestValue){
+						if(prints){
+							System.out.print(d.getScore() + " ");
+						}
 						d.reroll();
 					} 
 				}
 			}
 			break; 
 		case 11: //Small Straight
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			scores = new int[5];
 			for(int i = 0; i<5; i++){
 				scores[i]=-1;
@@ -203,11 +269,20 @@ public class BruteAlgo {
 			}
 			for(int i = 0; i<5; i++){
 				if(scores[i]==-1){
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
 				}
 			}
 			break;
 		case 12: //Large Straight
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			scores = new int[5];
 			for(int i = 0; i<5; i++){
 				scores[i]=-1;
@@ -225,11 +300,20 @@ public class BruteAlgo {
 			}
 			for(int i = 0; i<5; i++){
 				if(scores[i]==-1){
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
 				}
 			}
 			break;
 		case 13: //Full House
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			int tri = 0;
 			int par = 0;
 			scores = new int[5];
@@ -255,19 +339,37 @@ public class BruteAlgo {
 					//This is a good threesome
 					//or a par
 				}else{
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
 				}
 			}
 			break;
 		case 14: //Chance
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			//Save everything over nomalized value 3,5 i.e. 4 or over.
 			for(int i = 0; i<5; i++){
 				if(dices[i].getScore() < 4){
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
 				}
 			}
 			break;
 		case 15: //Yahtzee
+			if(prints){
+				System.out.print("\n(Brute Algo) For row " + turn + ", have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			scores = new int[5];
 			int noReRoll = 0;
 			
@@ -285,8 +387,12 @@ public class BruteAlgo {
 				noReRoll = scores[1];
 			if(noReRoll != 0){
 				for(int i = 0; i<5; i++){
-					if(dices[i].getScore() != noReRoll)
+					if(dices[i].getScore() != noReRoll){
+						if(prints){
+							System.out.print(dices[i].getScore() + " ");
+						}
 						dices[i].reroll();
+					}
 				}
 				break;
 			}
@@ -301,8 +407,12 @@ public class BruteAlgo {
 			//If threesome is found, reroll rest.
 			if(noReRoll != 0){
 				for(int i = 0; i<5; i++){
-					if(dices[i].getScore() != noReRoll)
+					if(dices[i].getScore() != noReRoll){
+						if(prints){
+							System.out.print(dices[i].getScore() + " ");
+						}
 						dices[i].reroll();
+					}
 				}
 				break;
 			}
@@ -316,8 +426,12 @@ public class BruteAlgo {
 			//If pair found, reroll rest.
 			if(noReRoll != 0){
 				for(int i = 0; i<5; i++){
-					if(dices[i].getScore() != noReRoll)
+					if(dices[i].getScore() != noReRoll){
+						if(prints){
+							System.out.print(dices[i].getScore() + " ");
+						}
 						dices[i].reroll();
+					}
 				}
 				break;
 			}
@@ -325,8 +439,12 @@ public class BruteAlgo {
 			//Nothing found, go for highest.
 			noReRoll = scores[4];
 			for(int i = 0; i<5; i++){
-				if(dices[i].getScore() != noReRoll)
+				if(dices[i].getScore() != noReRoll){
+					if(prints){
+						System.out.print(dices[i].getScore() + " ");
+					}
 					dices[i].reroll();
+				}
 			}
 			break;
 		}

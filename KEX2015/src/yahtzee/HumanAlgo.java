@@ -3,6 +3,7 @@ package yahtzee;
 import java.util.Arrays;
 
 public class HumanAlgo {
+	private static boolean prints = true;
 	/**
 	 * Play method to simulate a game of solitare yahtzee.
 	 *  
@@ -15,7 +16,6 @@ public class HumanAlgo {
 		for(int i = 1; i < 16; i++){
 			if(sc.getRowScore(i)==-1){
 				playableScore[i] = true;
-				//System.out.println("In check for unplayed rows"); //Trace prints
 			} else {
 				playableScore[i] = false;
 			}
@@ -24,7 +24,6 @@ public class HumanAlgo {
 		//-- Evaluate result --\\
 		for(int i = 2; i >= 0; i--){
 			evaluate(dices, playableScore, i, sc);
-			//System.out.println("after evaluate on roll" + i);
 		}
 		
 	}
@@ -84,6 +83,11 @@ public class HumanAlgo {
 				}
 			}
 			finalScore = tempScore;
+			if(prints){
+				System.out.println("\nSetting dice values " + finalScore[0] + ", "+ finalScore[1] + 
+						", " + finalScore[2] + ", "+ finalScore[3] + ", " + finalScore[4]+ " on row "+ 
+						selectedRow + " in Human Algorithm.");
+			}
 			sc.setScore(finalScore, selectedRow);
 			
 		/*
@@ -98,6 +102,12 @@ public class HumanAlgo {
 		 *
 		/* *** *** ONE THROW LEFT *** *** */	
 		} else if(rollsLeft == 1) { 
+			if(prints){
+				System.out.print("\n(Human Algo) 2nd throw. Have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			int[] tempScore = new int[5];
 			for(int i = 0; i<5; i++){
 				tempScore[i] = dices[i].getScore();
@@ -119,8 +129,11 @@ public class HumanAlgo {
 							return;
 						}
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]) //Re-roll dice that is not paired
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]){ //Re-roll dice that is not paired
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					} 
@@ -131,16 +144,22 @@ public class HumanAlgo {
 							return;
 						} 
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[2] && d.getScore() != tempScore[0]) //Re-roll the one different dice
+							if(d.getScore() != tempScore[2] && d.getScore() != tempScore[0]){ //Re-roll the one different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					}
 					if(!playableScores[8]){//Two pairs not free
 						//keep best pair
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[2]) //Re-roll different dice
+							if(d.getScore() != tempScore[2]){ //Re-roll different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					}
@@ -148,28 +167,40 @@ public class HumanAlgo {
 				} else if(tempScore[3]==tempScore[4]){//Two pairs!
 					if(playableScores[13] || playableScores[8]){ //Full house possible or two pairs
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3])
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll for full house or just to improve situation.
+							}
 						}
 						return;
 					} else { //Two pairs not free
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[3])
+							if(d.getScore() != tempScore[3]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Save best pair
+							}
 						}
 						return;
 					}	
 				} 
 				if(playableScores[(tempScore[0])] || tempScore[0] > 3){//This row free or worth going for three of a kind etc.
 					for(Dice d : dices){ //Re-roll different dice
-						if(d.getScore() != tempScore[0])
+						if(d.getScore() != tempScore[0]){
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 					return;
 				}
 				for(Dice d : dices){ //Re-roll different dice
-					if(d.getScore() <=5) //Keep best dice.
+					if(d.getScore() <=5){ //Keep best dice.
+						if(prints)
+							System.out.print(d.getScore()+" ");
 						d.reroll();
+					}
 				}
 				return;
 				
@@ -179,8 +210,11 @@ public class HumanAlgo {
 				if(tempScore[1]==tempScore[3]){
 					if(playableScores[(tempScore[1])] || tempScore[1] >= 3){ //This row free or worth going for threeOfAKind etc.
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[1])
+							if(d.getScore() != tempScore[1]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll all other dices
+							}
 						}
 						return;
 					} 	
@@ -188,23 +222,32 @@ public class HumanAlgo {
 				if(tempScore[3]==tempScore[4]){//Two pairs.
 					if(playableScores[13] && (playableScores[8] || playableScores[7])){//One pair or two pairs free - worth chancing for full house? 
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[1] && d.getScore() != tempScore[4])
+							if(d.getScore() != tempScore[1] && d.getScore() != tempScore[4]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll the different dice
+							}
 						}
 						return;
 					}
 					if(playableScores[(tempScore[3])]){ //Save best pair if needed
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[3])
+							if(d.getScore() != tempScore[3]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll all other dices
+							}
 						}
 						return;
 					}
 						
 				}
 				for(Dice d : dices){
-					if(d.getScore() != tempScore[1])
+					if(d.getScore() != tempScore[1]){
+						if(prints)
+							System.out.print(d.getScore()+" ");
 						d.reroll(); //Re-roll all other dices
+					}
 				}
 				return;
 				
@@ -214,23 +257,32 @@ public class HumanAlgo {
 				if(tempScore[2]==tempScore[4]){
 					if(playableScores[(tempScore[2])] || tempScore[2] >= 3){ //This row free or worth going for threeOfAKind etc.
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[2])
+							if(d.getScore() != tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll all other dices
+							}
 						}
 						return;
 					} 	
 				}
 				for(Dice d : dices){
-					if(d.getScore() != tempScore[2])
+					if(d.getScore() != tempScore[2]){
+						if(prints)
+							System.out.print(d.getScore()+" ");
 						d.reroll(); //Re-roll all other dices
+						}
 				}
 				return;
 				
 			/* * * TWO DICES ALIKE - 4 and 5 * * */	
 			} else if(tempScore[3] == tempScore[4]){
 				for(Dice d : dices){
-					if(d.getScore() != tempScore[3])
+					if(d.getScore() != tempScore[3]){
+						if(prints)
+							System.out.print(d.getScore()+" ");
 						d.reroll(); //Re-roll all other dices
+					}
 				}
 				return;
 			} 
@@ -247,8 +299,11 @@ public class HumanAlgo {
 				} 
 			}
 			for(Dice d : dices){
-				if(d.getScore() <= 5)
+				if(d.getScore() <= 5){
+					if(prints)
+						System.out.print(d.getScore()+" ");
 					d.reroll();
+				}
 			}
 		
 			
@@ -263,6 +318,12 @@ public class HumanAlgo {
 		 *		
 		/* *** *** TWO THROWS LEFT *** *** */	
 		} else if(rollsLeft == 2){
+			if(prints){
+				System.out.print("\n(Human Algo) 1st throw. Have: " +
+						dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+						dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+						dices[4].getScore() + " \nand rerolling dices with value: ");
+			}
 			int[] tempScore = new int[5];
 			for(int i = 0; i<5; i++){
 				tempScore[i] = dices[i].getScore();
@@ -283,14 +344,20 @@ public class HumanAlgo {
 							return;
 						}
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]) //Re-roll different dice
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]){ //Re-roll different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					} 
 					for(Dice d : dices){
-						if(d.getScore() != tempScore[0]) //Re-roll different dice
+						if(d.getScore() != tempScore[0]){ //Re-roll different dice
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 					return;
 				/* * Two pairs * */	
@@ -300,16 +367,22 @@ public class HumanAlgo {
 							return;
 						} 
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[2] && d.getScore() != tempScore[0]) //Re-roll the one different dice
+							if(d.getScore() != tempScore[2] && d.getScore() != tempScore[0]){ //Re-roll the one different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					}
 					if(!playableScores[8]){//Two pairs not free
 						//keep best pair
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[2]) //Re-roll different dice
+							if(d.getScore() != tempScore[2]){ //Re-roll different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 						return;
 					}
@@ -317,14 +390,20 @@ public class HumanAlgo {
 				} else if(tempScore[3]==tempScore[4]){//Two pairs!
 					if(playableScores[13] || playableScores[8]){ //Full house possible or two pairs
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3])
+							if(d.getScore() != tempScore[0] && d.getScore() != tempScore[3]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll for full house or just to improve situation.
+							}	
 						}
 						return;
 					} else {
 						for(Dice d : dices){
-							if(d.getScore() != tempScore[3])
+							if(d.getScore() != tempScore[3]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Save best pair
+							}
 						}
 						return;
 					}
@@ -334,6 +413,8 @@ public class HumanAlgo {
 						if(playableScores[11]){
 							for(Dice d : dices){
 								if(d.getScore() == tempScore[0]){//Re-roll the dice with existing number.
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
 									return;
 								}	
@@ -343,6 +424,8 @@ public class HumanAlgo {
 						if(playableScores[12]){
 							for(Dice d : dices){
 								if(d.getScore() == tempScore[0]){ //Re-roll the dice with existing number.
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
 									return;
 								}	
@@ -353,6 +436,8 @@ public class HumanAlgo {
 				if(playableScores[(tempScore[0])]){
 					for(Dice d : dices){
 						if(d.getScore() != tempScore[0]){ //Re-roll different dices.
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
 						}	
 					}
@@ -360,6 +445,8 @@ public class HumanAlgo {
 				}
 				for(Dice d : dices){
 					if(d.getScore() != 6){ //Only save sixes for a good start.
+						if(prints)
+							System.out.print(d.getScore()+" ");
 						d.reroll();
 					}	
 				} 
@@ -373,48 +460,71 @@ public class HumanAlgo {
 				if(tempScore[1] == tempScore[3]){ //Three of same kind
 					if(tempScore[1] == tempScore[4] || playableScores[13]){//Four of same kind or go for full house
 						for(Dice d : dices) 
-							if(d.getScore() < tempScore[1]) //Re-roll different dice (or dice with lowest value for full house)
+							if(d.getScore() < tempScore[1]){ //Re-roll different dice (or dice with lowest value for full house)
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						return;
 					}  else { //Try to get better results.
 						for(Dice d : dices) 
-							if(d.getScore() != tempScore[1]) //Re-roll different dice
+							if(d.getScore() != tempScore[1]){ //Re-roll different dice
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 					}
 					return;
 				} else if(tempScore[3]==tempScore[4]){//Two pairs - maybe go for full house
 					if(playableScores[13] || playableScores[8]){ //Full house possible or two pair 
 																// re-roll for getting three of a kind
 						for(Dice d : dices) 
-							if(d.getScore() < tempScore[1]) //Re-roll the only dice of one kind
+							if(d.getScore() < tempScore[1]){ //Re-roll the only dice of one kind
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll for full house!
+							}
 						return;
 					} else { //re-roll dice with lowest value. 
 						if(playableScores[(tempScore[4])]){ //Possible to go for 1-6 (highest value.)
 							for(Dice d : dices) 
-								if(d.getScore() != tempScore[4]) //Re-roll the dices that doesn't match.
+								if(d.getScore() != tempScore[4]){ //Re-roll the dices that doesn't match.
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
+								}
 						} else if(playableScores[(tempScore[1])]){ //second best pair free?
 							for(Dice d : dices) 
-								if(d.getScore() != tempScore[1]) //Re-roll the dices that doesn't match.
+								if(d.getScore() != tempScore[1]){ //Re-roll the dices that doesn't match.
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
+								}
 						} else{
 							for(Dice d : dices) 
-								if(d.getScore() != tempScore[4]) 
+								if(d.getScore() != tempScore[4]){ 
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll(); //Re-roll lowest ones anyway
+								}
 						}
 					}
 					return;
-				} else if(tempScore[1] > 3 || playableScores[(tempScore[1])]) { //Row free or worth going for?
+				} else if((tempScore[1] > 3) || playableScores[(tempScore[1])]) { //Row free or worth going for?
 					for(Dice d : dices) 
-						if(d.getScore() != tempScore[1]) //Re-roll the dices that doesn't match.
+						if(d.getScore() != tempScore[1]){ //Re-roll the dices that doesn't match.
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					return;
 				} 
 				if(playableScores[12]){ //Large straight free?
 					if(tempScore[0] != 1){ //All other values correct for lg.straight.
 						for(Dice d : dices){ 
 							if(d.getScore() == tempScore[1]){ //Re-roll the dices that doesn't match.
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
 								break;
 							}
@@ -426,6 +536,8 @@ public class HumanAlgo {
 					if(tempScore[4] != 6){ //All other values correct for sm.straight.
 						for(Dice d : dices){ 
 							if(d.getScore() == tempScore[1]){ //Re-roll the dice that doesn't match.
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
 								break;
 							}
@@ -434,8 +546,11 @@ public class HumanAlgo {
 					}
 				} 
 				for (int i = 0; i < 5; i++){
-					if(dices[i].getScore() < 6)
+					if(dices[i].getScore() < 6){
+						if(prints)
+							System.out.print(dices[i].getScore()+" ");
 						dices[i].reroll();
+					}
 				}
 				return;
 				
@@ -446,44 +561,65 @@ public class HumanAlgo {
 				if(tempScore[2] == tempScore[4]){ //Three of same kind
 					if(playableScores[(tempScore[2])]){ //Go for top row of this kind
 						for (Dice d : dices){
-							if(d.getScore() != tempScore[2])
+							if(d.getScore() != tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					} else if(playableScores[13]){ //Full house free. 
 						if(tempScore[2] >= 4 && tempScore[1] >= 3) { //Will not accept a value that's too low.
 							for(Dice d : dices){
-								if(d.getScore() != tempScore[2] || d.getScore() != tempScore[1]) //Re-roll other dice
+								if(d.getScore() != tempScore[2] || d.getScore() != tempScore[1]){ //Re-roll other dice
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
+								}
 							}
 						} else if(tempScore[2] >= 4){ // TempScore[1] was too low to keep.
 							for(Dice d : dices){
-								if(d.getScore() != tempScore[2]) //Re-roll other dice
+								if(d.getScore() != tempScore[2]){ //Re-roll other dice
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
+								}
 							}
 						} else {
 							for(Dice d : dices){ //Nothing worth saving.
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
 							}
 						}
 					} else if(tempScore[2] > 3){//Go for three of a kind or more
 						for (Dice d : dices){
-							if(d.getScore() != tempScore[2])
+							if(d.getScore() != tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					} else {
 						for(Dice d : dices){ //Nothing worth saving.
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
 						}
 					}
 				} else if(playableScores[(tempScore[2])]){ //Go for top row of this kind
 					for (Dice d : dices){
-						if(d.getScore() != tempScore[2])
+						if(d.getScore() != tempScore[2]){
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 				} else if(playableScores[12]){ //L-g. straight
 					if(tempScore[0] != 1){ //Go for straight (one different dice)
 						for (Dice d : dices){
 							if(d.getScore() == tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll one of the alike dices. 
 								break;
 							}
@@ -492,6 +628,8 @@ public class HumanAlgo {
 						if(tempScore[4] != 6){ //Go for straight (one different dice)
 							for (Dice d : dices){
 								if(d.getScore() == tempScore[2]){
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll(); //Re-roll one of the alike dices. 
 									break;
 								}
@@ -499,13 +637,19 @@ public class HumanAlgo {
 						}
 					} else if(tempScore[2] > 3){ //Go for high value (three, four of a kind etc.)
 						for (Dice d : dices){
-							if(d.getScore() != tempScore[2])
+							if(d.getScore() != tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					} else {
 						for (Dice d : dices){
-							if(d.getScore() < 4) //Re-roll dices lower than 6
+							if(d.getScore() < 4){ //Re-roll dices lower than 6
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					}
 					
@@ -513,31 +657,45 @@ public class HumanAlgo {
 					if(tempScore[4] != 6){ //Go for straight (one different dice)
 						for (Dice d : dices){
 							if(d.getScore() == tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll(); //Re-roll one of the alike dices. 
 								break;
 							}
 						}
 					} else if(tempScore[2] > 3){ //Go for high value (three, four of a kind etc.)
 						for (Dice d : dices){
-							if(d.getScore() != tempScore[2])
+							if(d.getScore() != tempScore[2]){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					} else {
 						for (Dice d : dices){
-							if(d.getScore() < 4) //Re-roll dices lower than 6
+							if(d.getScore() < 4){ //Re-roll dices lower than 6
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					}
 					
 				} else if(tempScore[2] > 3){ //Go for high value (three, four of a kind etc.)
 					for (Dice d : dices){
-						if(d.getScore() != tempScore[2])
+						if(d.getScore() != tempScore[2]){
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 				} else {
 					for (Dice d : dices){
-						if(d.getScore() < 4) //Re-roll dices lower than 6
+						if(d.getScore() < 4){ //Re-roll dices lower than 6
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 				}
 				
@@ -547,14 +705,19 @@ public class HumanAlgo {
 			} else if(tempScore[3] == tempScore[4]){//Only pair possible 
 				if(playableScores[(tempScore[3])]){//Go for this row
 					for(Dice d : dices){
-						if(d.getScore() != tempScore[3])
+						if(d.getScore() != tempScore[3]){
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll(); //Re-roll different dice.
+						}
 					}
 				} else { //Always worth saving, because of sorted and no other pairs, this is at least 4.
 					if(tempScore[0] == 1 && tempScore[3] != 6){ //No sixes - Small straight
 						if(playableScores[11]){
 							for(Dice d : dices){
 								if(d.getScore() == tempScore[3]){
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
 									return;
 								}	
@@ -564,6 +727,8 @@ public class HumanAlgo {
 						if(playableScores[12]){
 							for(Dice d : dices){
 								if(d.getScore() == tempScore[3]){
+									if(prints)
+										System.out.print(d.getScore()+" ");
 									d.reroll();
 									return;
 								}	
@@ -571,8 +736,11 @@ public class HumanAlgo {
 						}
 					}
 					for(Dice d : dices){ //Go for this score.
-						if(d.getScore() != tempScore[3])
+						if(d.getScore() != tempScore[3]){
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll(); //Re-roll different dice.
+						}		
 					}
 				}
 				
@@ -590,14 +758,20 @@ public class HumanAlgo {
 						return;
 					}else {
 						for(Dice d : dices){
-							if(d.getScore() == 6)
+							if(d.getScore() == 6){
+								if(prints)
+									System.out.print(d.getScore()+" ");
 								d.reroll();
+							}
 						}
 					}
 				} else {
 					for(Dice d : dices){
-						if(d.getScore() <= 5) //keep best dice(s)
+						if(d.getScore() <= 5){ //keep best dice(s)
+							if(prints)
+								System.out.print(d.getScore()+" ");
 							d.reroll();
+						}
 					}
 				}
 			}

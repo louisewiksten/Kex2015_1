@@ -6,7 +6,8 @@ import java.util.Arrays;
  * An algorithm that plays yahtzee optimally.
  */
 public class OptimizedAlgo {
-
+	private static boolean prints = true;
+	
 	/**
 	 * Evaluates the score based on the given dices. 
 	 */
@@ -456,6 +457,12 @@ public class OptimizedAlgo {
 	 * @param category
 	 */
 	private static void reroll(Dice[] dices, int category){
+		if(prints){
+			System.out.print("\n(Optimized human algo) Have: " +
+					dices[0].getScore() + ", " + dices[1].getScore() + ", " +
+					dices[2].getScore() + ", " + dices[3].getScore() + ", " +
+					dices[4].getScore() + " \nand rerolling dices with value: ");
+		}
 		int[] scores = new int[5];
 		int save = 0;
 		switch(category){
@@ -466,8 +473,11 @@ public class OptimizedAlgo {
 		case 5:
 		case 6:
 			for(Dice dice : dices){
-				if(!(dice.getScore() == category))
+				if(!(dice.getScore() == category)){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
+				}
 			}
 			break;
 			
@@ -486,6 +496,8 @@ public class OptimizedAlgo {
 			}
 			for(Dice dice : dices){
 				if(!(dice.getScore() == save)){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
 				}
 			}
@@ -525,8 +537,11 @@ public class OptimizedAlgo {
 				}
 			}
 			for(Dice dice : dices){
-				if(dice.getScore() != fpair && dice.getScore() != spair)
+				if(dice.getScore() != fpair && dice.getScore() != spair){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
+				}
 			}
 			
 			break;
@@ -552,8 +567,11 @@ public class OptimizedAlgo {
 				}
 			}
 			for(Dice dice : dices){											//Reroll all dices.
-				if(dice.getScore() != save)
+				if(dice.getScore() != save){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
+				}
 			}
 			break;
 			
@@ -584,8 +602,11 @@ public class OptimizedAlgo {
 				}
 			}
 			for(Dice dice : dices){
-				if(dice.getScore() != save)
+				if(dice.getScore() != save){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
+				}
 			}
 			break;
 			
@@ -612,6 +633,8 @@ public class OptimizedAlgo {
 			boolean[] rerolled = new boolean[5]; 							//Keep track of re-rolled dices!
 			for(int i = 0; i < 5; i++){											//If six reroll
 				if(dices[i].getScore() == 6){
+					if(prints)
+						System.out.print(dices[i].getScore()+" ");
 					dices[i].reroll();
 					rerolled[i] = true;
 				}
@@ -621,6 +644,8 @@ public class OptimizedAlgo {
 				if(scores[i] == scores[i+1]){								//If a pair 
 					for(int j = 0; j < 4; j++){								//reroll one dice of that value.
 						if(!rerolled[j] && dices[j].getScore() == scores[i]){
+							if(prints)
+								System.out.print(dices[j].getScore()+" ");
 							dices[j].reroll();
 							rerolled[j] = true;
 							break;
@@ -655,6 +680,8 @@ public class OptimizedAlgo {
 			}
 			for(int i = 0; i < 5; i++){											//If ones reroll
 				if(dices[i].getScore() == 1){
+					if(prints)
+						System.out.print(dices[i].getScore()+" ");
 					dices[i].reroll();
 					rerolled[i] = true;
 				}
@@ -664,6 +691,8 @@ public class OptimizedAlgo {
 				if(scores[i] == scores[i+1]){								//If a pair 
 					for(int j = 0; j < 4; j++){								//reroll one dice of that value.
 						if(!rerolled[j] && dices[j].getScore() == scores[i]){
+							if(prints)
+								System.out.print(dices[j].getScore()+" ");
 							dices[j].reroll();
 							rerolled[j] = true;
 							break;
@@ -719,14 +748,19 @@ public class OptimizedAlgo {
 			}
 			
 			for(Dice dice : dices){											//Reroll dices that we don't wish to save.
-				if(dice.getScore() != first && dice.getScore() != second)
+				if(dice.getScore() != first && dice.getScore() != second){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
+				}
 			}
 			break;
 			
 		case 14://Chance
 			for(Dice dice : dices){
 				if(!(dice.getScore()>3)){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
 				}
 			}
@@ -746,6 +780,8 @@ public class OptimizedAlgo {
 			}
 			for(Dice dice : dices){
 				if(dice.getScore() != save){
+					if(prints)
+						System.out.print(dice.getScore()+" ");
 					dice.reroll();
 				}
 			}
@@ -809,6 +845,11 @@ public class OptimizedAlgo {
 			}
 		}
 		//System.out.println("The row to be filled in: "+row + " and the score was: "+diceResults[0]+", "+diceResults[1]+", "+diceResults[2] +", "+diceResults[3] +", "+diceResults[4]);
+		if(prints){
+			System.out.println("\nSetting dice values " + diceResults[0] + ", "+ diceResults[1] + 
+					", " + diceResults[2] + ", "+ diceResults[3] + ", " + diceResults[4]+ " on row "+ 
+					row + " in Optimal Human Algorithm.");
+		}
 		sc.setScore(diceResults, row);
 	}
 	

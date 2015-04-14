@@ -6,6 +6,7 @@ import yahtzee.*;
 
 public class SameValueTest1 {
 	public static void main(String[] args) throws FileNotFoundException{
+		boolean prints = false;
 		ScoreCard sc = new ScoreCard(); //ForcedAlgo
 		ScoreCard sc2 = new ScoreCard();//HumanAlgo
 		ScoreCard sc3 = new ScoreCard();//OptimizedAlgo
@@ -20,7 +21,7 @@ public class SameValueTest1 {
 		
 		
 		/*Reading from file*/
-		BufferedReader br = new BufferedReader(new FileReader("dice19.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("dice3.txt"));
 	    try {
 	        StringBuilder sb = new StringBuilder();
 	        String line = br.readLine();
@@ -53,10 +54,14 @@ public class SameValueTest1 {
 				thisDiceV[2] = Integer.parseInt(thisRound[iter]);
 				iter++;
 				d.setValue(thisDiceV); //TODO read values.
-				System.out.println("Values for dice: "+thisDiceV[0]+","+thisDiceV[1]+","+thisDiceV[2]);
+				
+				if(prints){
+					System.out.println("Values for dice: "+thisDiceV[0]+","+thisDiceV[1]+","+thisDiceV[2]);
+				}
 			}
-			System.out.println("-");
-			
+			if(prints){
+				System.out.println("-");
+			}
 			
 			//Playing:
 			BruteAlgo.play(dices, sc);
