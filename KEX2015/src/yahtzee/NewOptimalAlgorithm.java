@@ -1,10 +1,12 @@
 package yahtzee;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 public class NewOptimalAlgorithm {
-	private static final int NUMBER_OF_ELEMENTS = 6 ^ 5 + 1; // Might not be
+	private static final short NUMBER_OF_ELEMENTS = 6 ^ 5 + 1; // Might not be
 																// needed.
 	private boolean[] playable;
 	private Dice[] dices;
@@ -13,18 +15,18 @@ public class NewOptimalAlgorithm {
 	public NewOptimalAlgorithm(ScoreCard sc) {
 		this.sc = sc;
 		dices = new Dice[5];
-		for (int i = 0; i < 5; i++) {
+		for (short i = 0; i < 5; i++) {
 			dices[i] = new Dice();
 		}
 		playable = new boolean[16];
 		playable[0] = false;
 
 		// Game time
-		for (int i = 1; i < 16; i++) {
-			for (int j = 0; j < 5; j++) {
+		for (short i = 1; i < 16; i++) {
+			for (short j = 0; j < 5; j++) {
 				dices[j].roll();
 			}
-			for (int roll = 2; roll > 0; roll--)
+			for (short roll = 2; roll > 0; roll--)
 				evaluate(roll);
 			score();
 		}
@@ -35,8 +37,8 @@ public class NewOptimalAlgorithm {
 	 * 
 	 * @param rollsLeft
 	 */
-	public void evaluate(int rollsLeft) {
-		for (int i = 1; i < 16; i++) {
+	public void evaluate(short rollsLeft) {
+		for (short i = 1; i < 16; i++) {
 			if (sc.getRowScore(i) == -1)
 				playable[i] = true;
 			else
@@ -45,34 +47,34 @@ public class NewOptimalAlgorithm {
 		simulateRolls(rollsLeft);
 	}
 
-	private void simulateRolls(int rollsLeft) {
+	private void simulateRolls(short rollsLeft) {
 		/*
 		 * Beräkna det förväntade resultatet från varje tärningskast. Spara det
 		 * värdet för de tärningarna för att se vilka som ska rullas om.
 		 */
-		
-		//TODO Någonting är skumt här, den gör inte alls som den ska.
-		//Beräkningarna blir inte helt rätt misstänker jag.
-		
+
+		// TODO Någonting är skumt här, den gör shorte alls som den ska.
+		// Beräkningarna blir shorte helt rätt misstänker jag.
+
 		double highestExpected = 0.0;
-		int[] rerollers = new int[5]; // Save values to check which dices should
+		short[] rerollers = new short[5]; // Save values to check which dices should
 										// be rerolled.
-		int[] values = new int[5];
-		for (int i = 0; i < 5; i++)
+		short[] values = new short[5];
+		for (short i = 0; i < 5; i++)
 			// Values contains all dices values, but is allowed to be changed.
-			values[i] = dices[i].getScore();
-		final int[] diceValues = values.clone();
+			values[i] = (short) dices[i].getScore();
+		final short[] diceValues = values.clone();
 
 		// Case 0, save what I have
 		highestExpected = bestScore(diceValues);
 		rerollers = diceValues.clone();
 
 		// First loop, 1 dice changed per loop.
-		for (int j = 0; j < 5; j++) {
-			// Int j is the position of the dice.
+		for (short j = 0; j < 5; j++) {
+			// short j is the position of the dice.
 			double thisExpected = 0.0;
-			for (int i = 1; i < 7; i++) {
-				// Int i is the value of a dice.
+			for (short i = 1; i < 7; i++) {
+				// short i is the value of a dice.
 				values[j] = i;
 				// Calculations for probability
 				double prob = probability(diceValues, values, rollsLeft);
@@ -84,19 +86,19 @@ public class NewOptimalAlgorithm {
 				highestExpected = thisExpected;
 				rerollers = values.clone();
 			}
-			values[j] = dices[j].getScore();
+			values[j] = (short) dices[j].getScore();
 
 		}
 
 		// Second loop, 2 dices changed per loop.
-		for (int i = 0; i < 5; i++) {
+		for (short i = 0; i < 5; i++) {
 			// i is the number of the first dice to simulate.
-			for (int j = 0; j < 5; j++) {
+			for (short j = 0; j < 5; j++) {
 				// j is the number of the second dice to simulate.
 				double thisExpected = 0.0;
-				for (int k = 1; k < 7; k++) {
+				for (short k = 1; k < 7; k++) {
 					// k is the value of first dice.
-					for (int m = 1; m < 7; m++) {
+					for (short m = 1; m < 7; m++) {
 						// m is the value of second dice.
 						values[i] = k;
 						values[j] = m;
@@ -112,24 +114,24 @@ public class NewOptimalAlgorithm {
 					highestExpected = thisExpected;
 					rerollers = values.clone();
 				}
-				for (int it = 0; it < 5; it++) {
+				for (short it = 0; it < 5; it++) {
 					values[it] = diceValues[it];
 				}
 			}
 		}
 		// Third loop, 3 dices changed per loop.
-		for (int i = 0; i < 5; i++) {
+		for (short i = 0; i < 5; i++) {
 			// i is first dice
-			for (int j = 0; j < 5; j++) {
+			for (short j = 0; j < 5; j++) {
 				// j is second dice
-				for (int k = 0; k < 5; k++) {
+				for (short k = 0; k < 5; k++) {
 					// k is third dice
 					double thisExpected = 0.0;
-					for (int a = 1; a < 7; a++) {
+					for (short a = 1; a < 7; a++) {
 						// a is value of first dice (dice i)
-						for (int b = 1; b < 7; b++) {
+						for (short b = 1; b < 7; b++) {
 							// b is value of second dice (dice j)
-							for (int c = 1; c < 7; c++) {
+							for (short c = 1; c < 7; c++) {
 								// c is value of third dice(dice k)
 								values[i] = a;
 								values[j] = b;
@@ -149,7 +151,7 @@ public class NewOptimalAlgorithm {
 						highestExpected = thisExpected;
 						rerollers = values.clone();
 					}
-					for (int it = 0; it < 5; it++) {
+					for (short it = 0; it < 5; it++) {
 						values[it] = diceValues[it];
 					}
 				}
@@ -157,22 +159,22 @@ public class NewOptimalAlgorithm {
 			}
 		}
 		// Fourth roll, 4 dices changed
-		for (int i = 0; i < 5; i++) {
+		for (short i = 0; i < 5; i++) {
 			// i is first dice
-			for (int j = 0; j < 5; j++) {
+			for (short j = 0; j < 5; j++) {
 				// j is second dice
-				for (int k = 0; k < 5; k++) {
+				for (short k = 0; k < 5; k++) {
 					// k is third dice
-					for (int l = 0; l < 5; l++) {
+					for (short l = 0; l < 5; l++) {
 						// l is fourth dice
 						double thisExpected = 0.0;
-						for (int a = 1; a < 7; a++) {
+						for (short a = 1; a < 7; a++) {
 							// a is value of first dice (dice i)
-							for (int b = 1; b < 7; b++) {
+							for (short b = 1; b < 7; b++) {
 								// b is value of second dice (dice j)
-								for (int c = 1; c < 7; c++) {
+								for (short c = 1; c < 7; c++) {
 									// c is value of third dice(dice k)
-									for (int d = 1; d < 7; d++) {
+									for (short d = 1; d < 7; d++) {
 										// d is value of fourth dice(dice l)
 										values[i] = a;
 										values[j] = b;
@@ -193,7 +195,7 @@ public class NewOptimalAlgorithm {
 							highestExpected = thisExpected;
 							rerollers = values.clone();
 						}
-						for (int it = 0; it < 5; it++) {
+						for (short it = 0; it < 5; it++) {
 							values[it] = diceValues[it];
 						}
 					}
@@ -201,15 +203,15 @@ public class NewOptimalAlgorithm {
 			}
 		}
 		// Last roll
-		for (int it = 0; it < 1; it++) {
+		for (short it = 0; it < 1; it++) {
 			// Outer loop so trasch-collector pick up thisExpected.
-			int thisExpected = 0;
-			for (int i = 1; i < 7; i++) {
-				for (int j = 1; j < 7; j++) {
-					for (int k = 1; k < 7; k++) {
-						for (int l = 1; l < 7; l++) {
-							for (int m = 1; m < 7; m++) {
-								values = new int[] { i, j, k, l, m };
+			short thisExpected = 0;
+			for (short i = 1; i < 7; i++) {
+				for (short j = 1; j < 7; j++) {
+					for (short k = 1; k < 7; k++) {
+						for (short l = 1; l < 7; l++) {
+							for (short m = 1; m < 7; m++) {
+								values = new short[] { i, j, k, l, m };
 								double prob = probability(diceValues, values,
 										rollsLeft);
 								double expect = bestScore(values);
@@ -228,19 +230,19 @@ public class NewOptimalAlgorithm {
 		// End loop, for rerolling.
 		// Rerolling those dices that differ between
 		// rerollers and dices.
-		for (int i = 0; i < 5; i++) {
+		for (short i = 0; i < 5; i++) {
 			if (dices[i].getScore() != rerollers[i]) {
 				dices[i].reroll();
 			}
 		}
 	}
 
-	private double bestScore(int[] DiceValues) {
-		int[] values = DiceValues.clone();
+	private double bestScore(short[] DiceValues) {
+		short[] values = DiceValues.clone();
 		Arrays.sort(values);
-		int ret = 0;
-		int bestScore = 0;
-		for (int category = 1; category < 16; category++) {
+		short ret = 0;
+		short bestScore = 0;
+		for (short category = 1; category < 16; category++) {
 			ret = 0;
 			if (playable[category]) {
 				switch (category) {
@@ -250,29 +252,29 @@ public class NewOptimalAlgorithm {
 				case 4:
 				case 5:
 				case 6:
-					for (int value : values) {
+					for (short value : values) {
 						if (value == category)
 							ret += value;
 					}
-					if(ret == 5*category){
+					if (ret == 5 * category) {
 						ret = 49;
 						break;
-					}else if(expectedTopSum() - 3*category + ret > 62)
-						ret+=50;
+					} else if (expectedTopSum() - 3 * category + ret > 62)
+						ret += 50;
 					else
 						ret = 0;
 					break;
 				case 7:// Pair
-					for (int i = 0; i < 4; i++) {
+					for (short i = 0; i < 4; i++) {
 						if (values[i] == values[i + 1]) {
 							ret = values[i];
 						}
 					}
 					break;
 				case 8:// Two pairs
-					int fpair = 0;
-					int tpair = 0;
-					for (int i = 0; i < 4; i++) {
+					short fpair = 0;
+					short tpair = 0;
+					for (short i = 0; i < 4; i++) {
 						if (values[i] == values[i + 1]) {
 							if (fpair == 0) {
 								fpair = values[i];
@@ -286,23 +288,23 @@ public class NewOptimalAlgorithm {
 						}
 					}
 					if (fpair != 0 && tpair != 0) {
-						ret = 2 * (fpair + tpair);
+						ret = (short) (2 * (fpair + tpair));
 					} else {
 						ret = 0;
 					}
 					break;
 				case 9:// Three of a kind
 					ret = 0;
-					for (int i = 0; i < 3; i++) {
+					for (short i = 0; i < 3; i++) {
 						if (values[i] == values[i + 2]) {
-							ret = values[i] * 3;
+							ret = (short) (values[i] * 3);
 						}
 					}
 					break;
 				case 10:// Four of a kind
-					for (int i = 0; i < 2; i++) {
+					for (short i = 0; i < 2; i++) {
 						if (values[i] == values[i + 3]) {
-							ret = values[i] * 4;
+							ret = (short) (values[i] * 4);
 						}
 					}
 					break;
@@ -326,11 +328,11 @@ public class NewOptimalAlgorithm {
 					Arrays.sort(values);
 					if (values[0] == values[2] && values[3] == values[4]
 							&& values[0] != values[4]) {
-						ret = (3 * values[0] + 2 * values[3]); // Small three
+						ret = (short) (3 * values[0] + 2 * values[3]); // Small three
 																// big pair
 					} else if (values[0] == values[1] && values[2] == values[4]
 							&& values[0] != values[4]) {
-						ret = 2 * values[0] + 3 * values[2]; // Small pair big
+						ret = (short) (2 * values[0] + 3 * values[2]); // Small pair big
 																// three
 					} else {
 						ret = 0;
@@ -354,29 +356,30 @@ public class NewOptimalAlgorithm {
 
 	private void score() {
 		// TODO Fix an evaluating scoring method.
-		// TODO Ask Louise if we could make this method more like here way of writing.
-		int bestScore = 0;
-		int bestCategory = 0;
-		int[] diceValues = new int[5];
-		for (int i = 0; i < 5; i++) {
-			diceValues[i] = dices[i].getScore();
+		// TODO Ask Louise if we could make this method more like here way of
+		// writing.
+		short bestScore = 0;
+		short bestCategory = 0;
+		short[] diceValues = new short[5];
+		for (short i = 0; i < 5; i++) {
+			diceValues[i] = (short) dices[i].getScore();
 		}
 		Arrays.sort(diceValues);
 
-		int score = 0;
+		short score = 0;
 
 		// Ones-Sixes
 		// ****************************************************************
-		for (int j = 1; j < 7; j++) {
+		for (short j = 1; j < 7; j++) {
 			score = 0;
-			for (int i = 0; i < 5; i++)
+			for (short i = 0; i < 5; i++)
 				if (diceValues[i] == j)
 					score += j;
-			if(expectedTopSum()-3*j+score > 62)
+			if (expectedTopSum() - 3 * j + score > 62)
 				score += 50;
 			else
 				score = 0;
-			if (expectedScore(15, diceValues) != 0) {
+			if (expectedScore((short) 15, diceValues) != 0) {
 				if (diceValues[0] == j)
 					score = 49;
 			}
@@ -389,9 +392,9 @@ public class NewOptimalAlgorithm {
 		// Pair (7)
 		// ****************************************************************
 		score = 0;
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 			if (diceValues[i] == diceValues[i + 1])
-				score = diceValues[i] * 2;
+				score = (short) (diceValues[i] * 2);
 		}
 		if (score >= bestScore && playable[7]) {
 			bestScore = score;
@@ -400,9 +403,9 @@ public class NewOptimalAlgorithm {
 
 		// Two Pairs (8)
 		// ****************************************************************
-		int pair = 0;
-		int spair = 0;
-		for (int i = 0; i < 4; i++) {
+		short pair = 0;
+		short spair = 0;
+		for (short i = 0; i < 4; i++) {
 			if (diceValues[i] == diceValues[i + 1]) {
 				if (pair == 0) {
 					pair = diceValues[i];
@@ -412,7 +415,7 @@ public class NewOptimalAlgorithm {
 			}
 		}
 		if (pair != 0 && spair != 0)
-			score = 2 * (pair + spair);
+			score = (short) (2 * (pair + spair));
 		else
 			score = 0;
 		if (score >= bestScore && playable[8]) {
@@ -422,9 +425,9 @@ public class NewOptimalAlgorithm {
 		// Three of a kind (9)
 		// ****************************************************************
 		score = 0;
-		for (int i = 0; i < 3; i++) {
+		for (short i = 0; i < 3; i++) {
 			if (diceValues[i] == diceValues[i + 2])
-				score = diceValues[i] * 3;
+				score = (short) (diceValues[i] * 3);
 		}
 		if (score >= bestScore && playable[9]) {
 			bestScore = score;
@@ -434,9 +437,9 @@ public class NewOptimalAlgorithm {
 		// Four of a kind (10)
 		// ****************************************************************
 		score = 0;
-		for (int i = 0; i < 2; i++) {
+		for (short i = 0; i < 2; i++) {
 			if (diceValues[i] == diceValues[i + 3])
-				score = diceValues[i] * 4;
+				score = (short) (diceValues[i] * 4);
 		}
 		if (score >= bestScore && playable[10]) {
 			bestScore = score;
@@ -471,12 +474,12 @@ public class NewOptimalAlgorithm {
 		score = 0;
 		if (diceValues[0] == diceValues[2])
 			if (diceValues[3] == diceValues[4])
-				score = diceValues[0] * 3 + diceValues[4];
+				score = (short) (diceValues[0] * 3 + diceValues[4]);
 			else
 				score = 0;
 		else if (diceValues[0] == diceValues[1])
 			if (diceValues[2] == diceValues[4])
-				score = 2 * diceValues[0] + 3 * diceValues[4];
+				score = (short) (2 * diceValues[0] + 3 * diceValues[4]);
 			else
 				score = 0;
 		else
@@ -489,13 +492,11 @@ public class NewOptimalAlgorithm {
 
 		// No Chance
 		// (14)****************************************************************
-		/*score = 0;
-		for (int i = 0; i < 5; i++)
-			score += diceValues[i];
-		if (score > bestScore && playable[14]) {
-			bestScore = score;
-			bestCategory = 14;
-		}*/
+		/*
+		 * score = 0; for (short i = 0; i < 5; i++) score += diceValues[i]; if
+		 * (score > bestScore && playable[14]) { bestScore = score; bestCategory
+		 * = 14; }
+		 */
 
 		// Yahtzee
 		// (15)****************************************************************
@@ -506,25 +507,31 @@ public class NewOptimalAlgorithm {
 			bestScore = score;
 			bestCategory = 15;
 		}
-		if (bestScore == 0){
-			if(playable[14]){
+		if (bestScore == 0) {
+			if (playable[14]) {
 				bestCategory = 14;
 			}
 			System.out.println("\nScratching following row:");
 			bestCategory = scratch();
-			
+
 		}
-		System.out.println("Best row is: " + bestCategory+" with dice values: "+diceValues[0]+", "+diceValues[1]+", "+diceValues[2]+", "+diceValues[3]+" and "+diceValues[4]);
-		sc.setScore(diceValues, bestCategory);
+		System.out.println("Best row is: " + bestCategory
+				+ " with dice values: " + diceValues[0] + ", " + diceValues[1]
+				+ ", " + diceValues[2] + ", " + diceValues[3] + " and "
+				+ diceValues[4]);
+		int[] values = new int[5];
+		for(short i = 0; i<5; i++)
+			values[i] = (int) diceValues[i];
+		sc.setScore(values, bestCategory);
 		this.playable[bestCategory] = false;
 	}
 
-	private int expectedTopSum() {
-		int sum = 0;
-		for(int i = 1; i<7; i++){
-			if(playable[i]){
-				sum += 3*i;
-			}else{
+	private short expectedTopSum() {
+		short sum = 0;
+		for (short i = 1; i < 7; i++) {
+			if (playable[i]) {
+				sum += 3 * i;
+			} else {
 				sum += sc.getRowScore(i);
 			}
 		}
@@ -535,24 +542,24 @@ public class NewOptimalAlgorithm {
 	 * 
 	 * @return
 	 */
-	private int scratch() {
+	private short scratch() {
 		double expVal = Double.MAX_VALUE;
-		int rowToDiscard = 0;
-		int c = 1;
-		for(int i = 7; i<16; i++){
-			if(playable[i]){
+		short rowToDiscard = 0;
+		short c = 1;
+		for (short i = 7; i < 16; i++) {
+			if (playable[i]) {
 				c = 7;
 				break;
-			}else
+			} else
 				c = 1;
 		}
-		for (int i = c; i < 16; i++) {
+		for (short i = c; i < 16; i++) {
 			if (playable[i]) {
 				double thisVal = 0;
 				if (i < 7) {
-					int[] val = { 0, 0, 0, 0, 0 };
-					int[] valNext = { i, 0, 0, 0, 0 };
-					for (int j = 0; j < 5; j++) {
+					short[] val = { 0, 0, 0, 0, 0 };
+					short[] valNext = { i, 0, 0, 0, 0 };
+					for (short j = 0; j < 5; j++) {
 						val[j] = i;
 						if (j < 4) {
 							valNext[j + 1] = i; // Used because the probability
@@ -568,81 +575,81 @@ public class NewOptimalAlgorithm {
 						}
 					}
 				} else if (i == 7) {
-					int[] val = { 1, 1, 0, 0, 0 }; // Same probability to
+					short[] val = { 1, 1, 0, 0, 0 }; // Same probability to
 													// receive any pair.
 					double prob = probability(null, val, 3);
-					for (int j = 0; j < 6; j++) {
-						val[0] = j + 1;
-						val[1] = j + 1;
+					for (short j = 0; j < 6; j++) {
+						val[0] = (short) (j + 1);
+						val[1] = (short) (j + 1);
 						thisVal += expectedScore(i, val) * prob;
 					}
 				} else if (i == 8) {
-					int[] val = { 1, 1, 2, 2, 0 }; // Same probability to
+					short[] val = { 1, 1, 2, 2, 0 }; // Same probability to
 													// receive any two pairs.
 					double prob = probability(null, val, 3);
-					for (int j = 0; j < 6; j++) {
-						for (int k = j + 1; k < 6; k++) {
-							val[0] = j + 1;
-							val[1] = j + 1;
-							val[2] = k + 1;
-							val[3] = k + 1;
+					for (short j = 0; j < 6; j++) {
+						for (short k = (short) (j + 1); k < 6; k++) {
+							val[0] = (short) (j + 1);
+							val[1] = (short) (j + 1);
+							val[2] = (short) (k + 1);
+							val[3] = (short) (k + 1);
 							thisVal += expectedScore(i, val) * prob;
 						}
 					}
 				} else if (i == 9) {
-					int[] val = { 1, 1, 1, 0, 0 }; // Same probability to
+					short[] val = { 1, 1, 1, 0, 0 }; // Same probability to
 													// receive any pair.
 					double prob = probability(null, val, 3);
-					for (int j = 0; j < 6; j++) {
-						val[0] = j + 1;
-						val[1] = j + 1;
-						val[2] = j + 1;
+					for (short j = 0; j < 6; j++) {
+						val[0] = (short) (j + 1);
+						val[1] = (short) (j + 1);
+						val[2] = (short) (j + 1);
 						thisVal += expectedScore(i, val) * prob;
 					}
 				} else if (i == 10) {
-					int[] val = { 1, 1, 1, 1, 0 }; // Same probability to
+					short[] val = { 1, 1, 1, 1, 0 }; // Same probability to
 													// receive any three of a
 													// kind.
 					double prob = probability(null, val, 3);
-					for (int j = 0; j < 6; j++) {
-						val[0] = j + 1;
-						val[1] = j + 1;
-						val[2] = j + 1;
-						val[3] = j + 1;
+					for (short j = 0; j < 6; j++) {
+						val[0] = (short) (j + 1);
+						val[1] = (short) (j + 1);
+						val[2] = (short) (j + 1);
+						val[3] = (short) (j + 1);
 						thisVal += expectedScore(i, val) * prob;
 					}
 				} else if (i == 11) {
-					int[] val = { 1, 2, 3, 4, 5 }; // Same probability to
+					short[] val = { 1, 2, 3, 4, 5 }; // Same probability to
 													// receive any four of a
 													// kind.
 					double prob = probability(null, val, 3);
 					thisVal += expectedScore(i, val) * prob;
 
 				} else if (i == 12) {
-					int[] val = { 2, 3, 4, 5, 6 };
+					short[] val = { 2, 3, 4, 5, 6 };
 					thisVal = 20 * probability(null, val, 3);
 				} else if (i == 13) {
-					int[] val = new int[5];
-					for (int j = 1; j <= 6; j++) {
-						for (int k = 1; k <= 6; k++) {
+					short[] val = new short[5];
+					for (short j = 1; j <= 6; j++) {
+						for (short k = 1; k <= 6; k++) {
 							if (j == k) {
 								continue;
 							}
-							val = new int[] { j, j, j, k, k };
+							val = new short[] { j, j, j, k, k };
 							thisVal += expectedScore(i, val)
 									* probability(null, val, 3);
 						}
 					}
 				} else if (i == 15) {
-					int[] val = { 1, 1, 1, 1, 1 }; // Same probability to
+					short[] val = { 1, 1, 1, 1, 1 }; // Same probability to
 													// receive any yahtzee.
 					double prob = probability(null, val, 3);
-					for (int j = 0; j < 6; j++) {
-						val[0] = j + 1;
-						val[1] = j + 1;
-						val[2] = j + 1;
-						val[3] = j + 1;
-						val[4] = j + 1;
+					for (short j = 0; j < 6; j++) {
+						val[0] = (short) (j + 1);
+						val[1] = (short) (j + 1);
+						val[2] = (short) (j + 1);
+						val[3] = (short) (j + 1);
+						val[4] = (short) (j + 1);
 						thisVal += 50 * prob;
 					}
 				}
@@ -657,72 +664,72 @@ public class NewOptimalAlgorithm {
 
 	/**
 	 * 
-	 * @param category
+	 * @param j
 	 * @param values
 	 * @return
 	 */
-	private double expectedScore(int category, int[] values) {
-		int ret = 0;
+	private double expectedScore(short j, short[] values) {
+		short ret = 0;
 		Arrays.sort(values);
-		switch (category) {
+		switch (j) {
 		case 1:
-			for (int value : values) {
-				if (value == category)
+			for (short value : values) {
+				if (value == j)
 					ret += value;
 			}
-			if (ret >= category * 3 && sc.getTopRowSum()<63) {
+			if (ret >= j * 3 && sc.getTopRowSum() < 63) {
 				ret += 100;
 			}
-			if (expectedScore(15, values) != 0) {
-				if (values[0] == category)
+			if (expectedScore((short)15, values) != 0) {
+				if (values[0] == j)
 					ret = 49;
 			}
 			return ret;
 		case 2:
-			for (int value : values) {
-				if (value == category)
+			for (short value : values) {
+				if (value == j)
 					ret += value;
 			}
-			if (ret <= category) {
+			if (ret <= j) {
 				ret = 0;
-			} else if (ret >= category * 3) {
+			} else if (ret >= j * 3) {
 				ret += 50;
 			}
-			if (expectedScore(15, values) != 0) {
-				if (values[0] == category)
+			if (expectedScore((short)15, values) != 0) {
+				if (values[0] == j)
 					ret = 49;
 			}
 			return ret;
 		case 3:
 		case 4:
 		case 5:
-			for (int value : values) {
-				if (value == category)
+			for (short value : values) {
+				if (value == j)
 					ret += value;
 			}
-			if (ret <= category * 2) {
+			if (ret <= j * 2) {
 				ret = 0;
-			} else if (ret >= category * 3) {
+			} else if (ret >= j * 3) {
 				ret += 50;
 			}
-			if (expectedScore(15, values) != 0) {
-				if (values[0] == category)
+			if (expectedScore((short)15, values) != 0) {
+				if (values[0] == j)
 					ret = 49;
 			}
 			return ret;
 		case 6:
-			for (int value : values) {
-				if (value == category)
+			for (short value : values) {
+				if (value == j)
 					ret += value;
 			}
-			if (ret <= category * 2) {
+			if (ret <= j * 2) {
 				ret = 0;
-			} else if (ret >= category * 3) {
+			} else if (ret >= j * 3) {
 				ret += 50;
 			}
 			return ret;
 		case 7:// Pair
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				if (values[i] == values[i + 1]) {
 					ret = values[i];
 				}
@@ -732,9 +739,9 @@ public class NewOptimalAlgorithm {
 			}
 			return (ret * 2);
 		case 8:// Two pairs
-			int fpair = 0;
-			int tpair = 0;
-			for (int i = 0; i < 4; i++) {
+			short fpair = 0;
+			short tpair = 0;
+			for (short i = 0; i < 4; i++) {
 				if (values[i] == values[i + 1]) {
 					if (fpair == 0) {
 						fpair = values[i];
@@ -753,7 +760,7 @@ public class NewOptimalAlgorithm {
 				return 0;
 			}
 		case 9:// Three of a kind
-			for (int i = 0; i < 3; i++) {
+			for (short i = 0; i < 3; i++) {
 				if (values[i] == values[i + 1] && values[i] == values[i + 2]) {
 					ret = values[i];
 					break;
@@ -764,10 +771,10 @@ public class NewOptimalAlgorithm {
 			}
 			return ret * 3;
 		case 10:// Four of a kind
-			for (int i = 0; i < 2; i++) {
+			for (short i = 0; i < 2; i++) {
 				if (values[i] == values[i + 1] && values[i] == values[i + 2]
 						&& values[i] == values[i + 3]) {
-					ret = values[i] * 4;
+					ret = (short) (values[i] * 4);
 					break;
 				}
 			}
@@ -815,47 +822,57 @@ public class NewOptimalAlgorithm {
 	 * Calculates the probability of getting certain dice values in a number of
 	 * rolls.
 	 * 
-	 * @param current
+	 * @param dices2
 	 *            Current dice values
-	 * @param wanted
+	 * @param dices3
 	 *            Wanted dice values
-	 * @param rollsLeft
+	 * @param l
 	 *            Number of rolls left.
 	 * @return
 	 */
-	private static double probability(int[] current, int[] wanted, int rollsLeft) {
-		if(current == null){
-			current = new int[]{-1,-1,-1,-1,-1};
+	public static double probability(short[] dices2, short[] dices3, int l) {
+		if (dices2 == null) {
+			dices2 = new short[] { -1, -1, -1, -1, -1 };
 		}
-		Arrays.sort(current);
-		Arrays.sort(wanted);
-		int n = 0;
-		int k = 0;
+		if(dices2.length < 5){
+			short[] array = new short[5];
+			for(short i = 0; i<dices2.length; i++){
+				array[i] = dices2[i];
+			}
+			Arrays.sort(array);
+			dices2 = array;
+		}
+		if (Arrays.equals(dices2, dices3))
+			return 1.0;
+		Arrays.sort(dices2);
+		Arrays.sort(dices3);
+		short n = 0;
+		short k = 0;
 		double prob = 0.0;
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				if (current[i] == wanted[j]) {
+		short jstart = 0;
+		for (short i = 0; i < dices2.length; i++) {
+			for(short j = jstart; j < dices3.length; j++){
+				if(dices2[i] == dices3[j]){
 					n++;
+					jstart = (short) (j + 1);
 					break;
 				}
 			}
 		}
-		n = 5 - n;
+		n = (short) (5 - n);
 		/*
 		 * n är antalet olika siffror i current och wanted. Antalet tärningar
 		 * som ska rullas om.
 		 */
 
-		for (int i : wanted) {
+		for (short i : dices3) {
 			if (i == 0)
 				k++;
 		}
-		k = n - k;
-		n *= rollsLeft;
+		k = (short) (n - k);
+		n *= l;
 
-		for (int i = 0; i < k; i++) {
-			prob = probabilityMassFunction(n, k);
-		}
+		prob = probabilityMassFunction(n, k);
 
 		return prob;
 	}
@@ -866,18 +883,21 @@ public class NewOptimalAlgorithm {
 	 * @param n
 	 * @param k
 	 */
-	private static double probabilityMassFunction(int n, int k) {
+	private static double probabilityMassFunction(short n, short k) {
 		/*
 		 * The probability mass function is the sum of all probabilities for
 		 * P(X<k) (the probabilities that k successes will occur in n attempts).
 		 */
 		double ret = 0;
 		double p = 1.0 / 6;
-		for (int i = 0; i < k; i++) {
+		for (short i = 0; i < k; i++) {
 			double d1 = (fact(n) / (fact(i) * fact(n - i)));
 			double d2 = Math.pow(p, (double) i);
 			double d3 = Math.pow((1.0 - p), (double) (n - i));
 			ret += d1 * d2 * d3;
+		}
+		if (n == k) {
+			return Math.pow(p, n);
 		}
 		return 1 - ret;
 	}
@@ -890,7 +910,7 @@ public class NewOptimalAlgorithm {
 	 */
 	private static double fact(double n) {
 		double ret = 1;
-		for (int i = 1; i <= n; i++) {
+		for (short i = 1; i <= n; i++) {
 			ret *= (double) i;
 		}
 		return ret;
